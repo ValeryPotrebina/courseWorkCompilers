@@ -15,6 +15,8 @@ tokens = (
    'DIVIDE',
    'LPAREN',
    'RPAREN',
+   'FUNCTION',
+   'VARIABLE'
 )
 
 # Regular expression rules for simple tokens
@@ -29,6 +31,13 @@ t_RPAREN  = r'\)'
 def t_NUMBER(t):
     r'\d+'
     t.value = int(t.value)    
+    return t
+
+def t_VARIABLE(t):
+    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    # Check if the variable is a function
+    if t.value in ['sin', 'cos', 'tg', 'tan', 'log', 'exp']:
+        t.type = 'FUNCTION'
     return t
 
 # Define a rule so we can track line numbers
@@ -49,18 +58,16 @@ lexer = lex.lex()
 
 # Test it out
 data = '''
-(3 + 4 * 10
-  + -20 *2
-  )
+sin(x)-20*cos(y)
 '''
 
 # Give the lexer some input
 lexer.input(data)
 
 # Tokenize
-while True:
-    tok = lexer.token()
-    if not tok: 
-        break      # No more input
-    print(tok)
+# while True:
+#     tok = lexer.token()
+#     if not tok: 
+#         break      # No more input
+#     print(tok)
 
