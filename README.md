@@ -43,3 +43,59 @@ sin x^2 + 2 -> sin(x) + 2
 S -> FUNCTION
 
 FUNCTION -> IDENT | IDENT OPERATION IDENT | E
+
+
+<!-- Грамматика -->
+
+# 1 + 2 * 3
+
+s           ->   expression PLUS expression  |
+                 expression MINUS expression |
+                 expression MULT expression  |
+                 expression DIV expression   |
+                 expression POW expression   | 
+                 expression
+
+expression  ->   unar expression |
+                 VAR | 
+                 NUMBER | 
+                 LPAREN expression RPAREN | 
+                 
+                 
+                
+unar        ->   MINUS | PLUS                
+            
+
+
+
+
+
+
+
+plus -> mult PLUS mult | mult MINUS mult | mult
+mult -> unar MULT unar | unar DIV unar | unar
+unar -> MINUS atom | PLUS atom
+atom  VAR | NUMBER | MINUS NUMBER | FUNCTION LPAREN s RPAREN | LPAREN s RPAREN
+
+
+
+
+
+
+
+
+
+
+
+
+В правиле p_expression_uminus, строка %prec UMINUS используется для указания приоритета оператора унарного минуса. Это необходимо для правильного разрешения конфликтов при разборе выражений, содержащих унарные операторы.
+
+Пояснение:
+Приоритет операторов:
+В математических выражениях унарные операторы, такие как унарный минус, имеют более высокий приоритет по сравнению с бинарными операторами, такими как сложение и вычитание. Например, в выражении -3 + 4, унарный минус применяется к 3 перед тем, как выполняется сложение.
+
+Конфликты при разборе:
+Без указания приоритета, парсер может неправильно интерпретировать выражения, содержащие унарные операторы. Например, без указания приоритета, выражение -3 + 4 может быть интерпретировано как -(3 + 4), что неправильно.
+
+Использование %prec UMINUS:
+Директива %prec UMINUS указывает парсеру, что унарный минус имеет приоритет, определенный как UMINUS в правилах приоритета операторов. Это помогает парсеру правильно разрешать конфликты и интерпретировать выражения.
