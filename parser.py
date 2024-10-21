@@ -5,7 +5,7 @@
 # numbers and +,-,*,/
 # ------------------------------------------------------------
 from ply import yacc
-from lexanalyser import tokens
+from lexer import tokens
 from model import NumberNode, VariableNode, BinaryOpNode, FunctionNode, UnaryOpNode
 
 # ЗАЧЕМ НАМ СЛОВАРЬ
@@ -84,30 +84,39 @@ def print_tree(node, level=0):
         print_tree(node.left, level + 1)
         print_tree(node.right, level + 1)
     elif isinstance(node, UnaryOpNode):
-        print(f"{indent}UnaryOp{node.operator})")
+        print(f"{indent}UnaryOp({node.operator})")
         print_tree(node.operand, level + 1)
 
 
+
+def parse(data):
+    return parser.parse(data)
 # Build the parser
 parser = yacc.yacc()
 
-# Test it out
-data = '''x + y * 2'''
-data1 = '''(x + y) * 2'''
-data2 = '''-(x + y) * 2'''
-data3 = '''sin(x+1) + ln(y+x)'''
-# data5 = '''sin(x+1) + ln(x)'''  Неработает
+if __name__ == "__main__":
+    data = '''x + y * 2'''
+    data1 = '''(x + y) * 2'''
+    data2 = '''-(x + y) * 2'''
+    data3 = '''sin(x+1) + ln(y+x)'''
+    data4 = '''x^(2+y)'''
 
-# Give the parser some input
-result = parser.parse(data)
-result1 = parser.parse(data1)
-result2 = parser.parse(data2)
-result3 = parser.parse(data3)
+    # data5 = '''sin(x+1) + ln(x)'''  Неработает
 
-print_tree(result)
-print("------------------")
-print_tree(result1)
-print("------------------")
-print_tree(result2)
-print("------------------")
-print_tree(result3)
+    # Give the parser some input
+    result = parse(data)
+    result1 = parse(data1)
+    result2 = parse(data2)
+    result3 = parse(data3)
+    result4 = parse(data4)
+
+
+    print_tree(result)
+    print("------------------")
+    print_tree(result1)
+    print("------------------")
+    print_tree(result2)
+    print("------------------")
+    print_tree(result3)
+    print("------------------")
+    print_tree(result4)

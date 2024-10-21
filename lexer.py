@@ -7,8 +7,8 @@
 from ply.lex import lex, TOKEN
 
 
-function = ['sin', 'cos', 'tan', 'ctan', 'ln',
-            'log', 'arcsin', 'arccos', 'arctan', 'arcctan']
+function = ['sin', 'cos', 'tg', 'ctg', 'ln',
+            'log', 'asin', 'acos', 'atg', 'actg']
 # List of token names.   This is always required
 tokens = (
     'NUMBER',
@@ -71,16 +71,18 @@ def t_error(t):
 # Build the lexer
 lexer = lex()
 
+
+if __name__ == "__main__":
+
 # Test it out
-# data = '''
-# sin(1) +
-# '''
+    data = '''
+    sin(1) +
+    '''
+    # Give the lexer some input
+    lexer.input(data)
 
-# Give the lexer some input
-# lexer.input(data)
-
-# while True:
-#     tok = lexer.token()
-#     if not tok:
-#         break      # No more input
-#     print(tok)
+    while True:
+        tok = lexer.token()
+        if not tok:
+            break      # No more input
+        print(tok)
