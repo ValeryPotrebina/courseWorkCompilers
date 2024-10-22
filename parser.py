@@ -13,6 +13,7 @@ names = {}
 
 # КАК РАБОТАЮТ ПРИОРИТЕТЫ
 precedence = (
+    ('left', 'COMPARE'),
     ('left', 'PLUS', 'MINUS'),
     ('left', 'MULT', 'DIV'),
     ('right', 'POW'),
@@ -26,7 +27,8 @@ precedence = (
 
 
 def p_calc(p):
-    '''expression : expression PLUS expression
+    '''expression : expression COMPARE expression
+                  | expression PLUS expression
                   | expression MINUS expression 
                   | expression MULT expression  
                   | expression DIV expression   
@@ -64,6 +66,7 @@ def p_expression_function(p):
         p[0] = FunctionNode(p[1], p[3])
     else:
         p[0] = FunctionNode(p[1], p[2])
+
 
 
 def p_error(p):

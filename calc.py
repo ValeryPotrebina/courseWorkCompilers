@@ -1,5 +1,6 @@
 from model import NumberNode, VariableNode, BinaryOpNode, FunctionNode, UnaryOpNode
 import math
+from simplify.simplify import simplify
 
 def getArgs(node):
     if (isinstance(node, NumberNode)):
@@ -29,6 +30,16 @@ def calcExpr(node):
             return left / right
         if (node.operator == "^"):
             return math.pow(left, right)
+        if (node.operator == "="):
+            return left == right
+        if (node.operator == ">="):
+            return left >= right
+        if (node.operator == "<="):
+            return left <= right
+        if (node.operator == ">"):
+            return left > right
+        if (node.operator == "<"):
+            return left < right
     if (isinstance(node, FunctionNode)):
         arg = calcExpr(node.arg)
         if (node.name) == "sin":
@@ -59,13 +70,42 @@ def calcExpr(node):
             return value
         if (node.operator == "-"):
             return -value
-        
-        
+
+
+def calcComparison(node):
+    # x + 5 = 2
+    comparisonBody = BinaryOpNode(node.left, '-', node.right)
+    operator = node.operator
+    # comparisonBody = x + 5 - (2)
+    # operator = "="
+    # x + 5 - (2) = 0
+
+    # comparisonBody operator 0
+    return 
+
+
+
+    
+
+
+
 
 def calc(node):
-    args = getArgs(node)
-    if len(args) == 0:
-        return calcExpr(node)
-    else:
-        return args
+    return simplify(node)
 
+
+
+
+def isFunction(node):
+    if (isinstance(node, BinaryOpNode) and node.operator == "=" and isinstance(node.left, VariableNode)):
+        return True
+    return False
+
+def isComparison(node):
+    if (isinstance(node, BinaryOpNode) and (node.operator in ['=', '>=', '<=', '>', '<'])):
+        return True
+    return False
+
+
+
+# 5 + x = 

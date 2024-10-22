@@ -49,7 +49,9 @@ FUNCTION -> IDENT | IDENT OPERATION IDENT | E
 
 # 1 + 2 * 3
 
-s           ->   expression PLUS expression  |
+
+s           ->   expression COMPARE expression
+                 expression PLUS expression  |
                  expression MINUS expression |
                  expression MULT expression  |
                  expression DIV expression   |
@@ -68,14 +70,21 @@ unar        ->   MINUS | PLUS
 
 
 
+Если только числа, то сразу вычисляем 
 
 
+# Уравнения от одной переменной
+x = 3 -> уравнение -> график
+x^2 + 3x + 5 = 4 + x + 2x^2 -> уравнения + гравик
+x^6 + x^4 + x^3 + x^2 = 3x
 
++ сравнения
 
-plus -> mult PLUS mult | mult MINUS mult | mult
-mult -> unar MULT unar | unar DIV unar | unar
-unar -> MINUS atom | PLUS atom
-atom  VAR | NUMBER | MINUS NUMBER | FUNCTION LPAREN s RPAREN | LPAREN s RPAREN
+---
+
+y^2 = x + 3 
+
+--
 
 
 

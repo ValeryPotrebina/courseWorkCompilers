@@ -5,11 +5,11 @@ if __name__=="__main__":
     # 
 
     data  = '''
-    sin(1.434343425)^2 + cos(1.434343425)^2
+    5 + 3 * 7 * (x + 4)
     '''
 
     result = parse(data)
     print_tree(result)
 
     result = calc(result)
-    print(result)
+    print_tree(result)

@@ -21,6 +21,7 @@ tokens = (
     'LPAREN',
     'RPAREN',
     'POW',
+    'COMPARE'
 )
 
 # Regular expression rules for simple tokens
@@ -31,7 +32,7 @@ t_DIV = r'/'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_POW = r'\^'
-
+t_COMPARE = r'\=|[\>\<]\=?'
 
 # A regular expression rule with some action code
 @TOKEN(r'\d+(\.\d*)?|\.\d+')
