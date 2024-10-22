@@ -5,7 +5,7 @@ if __name__=="__main__":
     # 
 
     data  = '''
-    5 + 3 * 7 * (x + 4)
+    5 + 21 * (x + 4)
     '''
 
     result = parse(data)
