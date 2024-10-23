@@ -97,6 +97,25 @@ def parse(data):
 # Build the parser
 parser = yacc.yacc()
 
+def prettify(node):
+    if isinstance(node, NumberNode):
+        return f"{node.value}"
+    if isinstance(node, VariableNode):
+        return f"{node.name}"
+    if isinstance(node, FunctionNode):
+        return f"{node.name}({prettify(node.arg)})"
+    if isinstance(node, BinaryOpNode):
+        left = prettify(node.left)
+        if isinstance(node.left, BinaryOpNode) and node.left.operator == node.operator:
+            left = left[1:-1]
+        right = prettify(node.right)
+        if isinstance(node.right, BinaryOpNode) and node.right.operator == node.operator:
+            right = right[1:-1]
+        return f"({left} {node.operator} {right})"
+    if isinstance(node, UnaryOpNode):
+        return f"({node.operator}{prettify(node.operand)})"
+
+
 if __name__ == "__main__":
     data = '''x + y * 2'''
     data1 = '''(x + y) * 2'''
@@ -123,3 +142,5 @@ if __name__ == "__main__":
     print_tree(result3)
     print("------------------")
     print_tree(result4)
+
+

@@ -1,8 +1,13 @@
 from model import BinaryOpNode, FunctionNode, NumberNode, VariableNode, UnaryOpNode
 import math
 
+commutativeOps = ["+", "*"]
+associativeOps = ["+", "*"]
+multDist = ["+", "-"]
+
 def simplify(node):
-    return simpleCalculation(node)
+    return distributivity(simpleCalculation(node))
+
 
 def simpleCalculation(node):
     if (isinstance(node, VariableNode) or isinstance(node, NumberNode)):
@@ -55,14 +60,60 @@ def simpleCalculation(node):
                 return NumberNode(math.log10(simpleArg.value))
         return FunctionNode(node.name, simpleArg)
     return node
-            # sin (2 + 3)
+    # sin (2 + 3)
 
 
+def commutativity(node):
+    if (isinstance(node, BinaryOpNode) and (node.operator in commutativeOps)):
+        return BinaryOpNode(node.right, node.operator, node.left)
+    return node
+
+
+def associativity(node):
+    if (isinstance(node, BinaryOpNode) and node.operator in associativeOps):
+        if (isinstance(node.left, BinaryOpNode) and node.left.operator == node.operator):
+            # Левая ассоциативность (a + b) + c -> a + (b + c)
+            # (+ (+ a b) c) -> (+ a (+ b c))
+            return BinaryOpNode(node.left.left, node.operator, BinaryOpNode(node.left.right, node.operator, node.right))
+        if (isinstance(node.right, BinaryOpNode) and node.right.operator == node.operator):
+            return BinaryOpNode(BinaryOpNode(node.left, node.operator, node.right.left), node.operator, node.right.right)
+
+
+# 5 - 2 - 3
 # - x
 # (* x (+ 2 4)) -> (* x 6)
+# (2^3)^4 (8^4) = 2^(3^4) (2^81)
 
-def distributation(node):
-    # дистрибутивност по умножению 
-    # x (x + y + z) or x (x + y + z)
-    
-    return
+def distributivity(node):
+    print("test1")
+    if isinstance(node, BinaryOpNode):
+        left = distributivity(node.left)
+        right = distributivity(node.right)
+        if node.operator == "*":
+            if (isinstance(right, BinaryOpNode) and right.operator in multDist):
+                print("check")
+                # x * (y + z) -> x * y + x * z
+                return BinaryOpNode(
+                    distributivity(BinaryOpNode(left, "*", right.left)),
+                    right.operator,
+                    distributivity(BinaryOpNode(left, "*", right.right))
+                )
+            if (isinstance(left, BinaryOpNode) and left.operator in multDist):
+                print("check")
+                # (y + z) * x -> x * y + x * z
+                return BinaryOpNode(
+                    distributivity(BinaryOpNode(left.left, "*", right)),    
+                    left.operator,
+                    distributivity(BinaryOpNode(left.right, "*", right))
+                )
+        return BinaryOpNode(left, node.operator, right)
+    if (isinstance(node, UnaryOpNode)):
+        return UnaryOpNode(node.operator, distributivity(node.operand))
+    if (isinstance(node, FunctionNode)):
+        return FunctionNode(node.name, distributivity(node.arg))
+    return node
+
+# - (z * (x + y))
+    # дистрибутивност по умножению
+    # (x + 4) * (x + y + z) or (x + y + z) x  ->>> (+ (+ x y) z) = (+ x y z)
+    # (* (+ x + y)(+ x z))
