@@ -6,7 +6,12 @@ associativeOps = ["+", "*"]
 multDist = ["+", "-"]
 
 def simplify(node):
-    return distributivity(simpleCalculation(node))
+    a = simpleCalculation(node)
+    print(a)
+    b = distributivity(a)
+    print(b)
+    c = descentUnary(b)
+    return c
 
 
 def simpleCalculation(node):
@@ -25,7 +30,7 @@ def simpleCalculation(node):
             if (node.operator == "/"):
                 return NumberNode(simpleLeft.value / simpleRight.value)
             if (node.operator == "^"):
-                return NumberNode(math.pow(simpleLeft, simpleRight))
+                return NumberNode(math.pow(simpleLeft.value, simpleRight.value))
         return BinaryOpNode(simpleLeft, node.operator, simpleRight)
     if (isinstance(node, UnaryOpNode)):
         simpleOperand = simpleCalculation(node.operand)
@@ -108,12 +113,77 @@ def distributivity(node):
                 )
         return BinaryOpNode(left, node.operator, right)
     if (isinstance(node, UnaryOpNode)):
+        
         return UnaryOpNode(node.operator, distributivity(node.operand))
     if (isinstance(node, FunctionNode)):
         return FunctionNode(node.name, distributivity(node.arg))
     return node
 
-# - (z * (x + y))
+
+
+def descentUnary(node):
+    if (isinstance(node, NumberNode) or isinstance(node, VariableNode)):
+        return node
+    if (isinstance(node, FunctionNode)):
+        return FunctionNode(node.name, descentUnary(node.arg))
+    if (isinstance(node, BinaryOpNode)):
+        return BinaryOpNode(descentUnary(node.left), node.operator, descentUnary(node.right))
+    if (isinstance(node, UnaryOpNode)):
+        if (node.operator == "-"):
+            # -(2) -> -2
+            if (isinstance(node.operand, NumberNode)):
+                return NumberNode(-node.operand.value)
+            # -(x) -> -(x)
+            if (isinstance(node.operand, VariableNode)):
+                return node
+            # -(sin(x)) -> -(sin(x))
+            if (isinstance(node.operand, FunctionNode)):
+                return UnaryOpNode(node.operator, descentUnary(node.operand))
+            # - (- x)
+            if (isinstance(node.operand, UnaryOpNode)):
+                if (node.operand.operator == "-"):
+                    return node.operand.operand
+                if (node.operand.operator == "+"):  
+                    return UnaryOpNode(node.operator, descentUnary(node.operand.operand))
+            if (isinstance(node.operand, BinaryOpNode)):
+                if (node.operand.operator == "+"):
+                    # - (x + y) => -(x) + -(y)
+                    return descentUnary(BinaryOpNode(
+                        UnaryOpNode("-", node.operand.left), 
+                        "+", 
+                        UnaryOpNode("-", node.operand.right)))
+                if (node.operand.operator == "-"):
+                    # - (x - y) => -(x) + (y)
+                    return descentUnary(BinaryOpNode(
+                        UnaryOpNode("-", node.operand.left), 
+                        "+", 
+                        (node.operand.right)))
+                # - (x * y) = -x * y
+                if (node.operand.operator == "*"):
+                    return descentUnary(
+                        BinaryOpNode(
+                            UnaryOpNode("-", node.operand.left), 
+                            "*", 
+                            node.operand.right
+                        )
+                    )
+                if (node.operand.operator == "/"):
+                    return descentUnary(
+                        BinaryOpNode(
+                            UnaryOpNode("-", node.operand.left), 
+                            "/", 
+                            node.operand.right
+                        ))
+                    
+                # - (BinOp(* Var(x), BinOp(* z, y)))      -> -(x * -z * y) = -x*y*z
+                # - (BinOp(+ x, y))                       -> -(x + y) = -x + -y
+
+
+    # - (z * (x + y))
     # дистрибутивност по умножению
     # (x + 4) * (x + y + z) or (x + y + z) x  ->>> (+ (+ x y) z) = (+ x y z)
     # (* (+ x + y)(+ x z))
+
+
+
+
