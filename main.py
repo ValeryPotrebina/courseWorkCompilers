@@ -1,7 +1,7 @@
 from parser import parse, print_tree, prettify
 from calc import calc
-from flask import Flask, request, jsonify
-from flask_cors import CORS
+# from flask import Flask, request, jsonify
+# from flask_cors import CORS
 
 
 # app = Flask(__name__)
@@ -22,15 +22,19 @@ from flask_cors import CORS
 #     except Exception as e:
 #         return jsonify({'error': str(e)}), 400
 
-    
-
+# TESTS
+# 2*(x-y)^2
+# 2*3(x*y)^4
+# 2*3(x*y)^4
 if __name__=="__main__":
     # app.run(debug=True)
 
     data  = '''
-    - (z * (x - y))
+    3*(6+(x+y)^(1+1))
     '''
 
+# 2(x-y)(x-y)
+# 2(xx-xy-yx+yy)=2xx-2xy-2yx+2yy
     # -(zx - zy) -> -zx + zy
 
     # (2 * (y + z))*x -> (2y + 2z)x = 2yx + 2xz
