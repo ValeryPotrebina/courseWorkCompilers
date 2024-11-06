@@ -199,7 +199,6 @@ def distributivityPow(node: BinaryOpNode):
 
         # x^(a+b)=> x^a*x^b
 
-
 def descentUnary(node):
     if (isinstance(node, NumberNode) or isinstance(node, VariableNode)):
         return node
@@ -284,6 +283,133 @@ def descentUnary(node):
     # дистрибутивност по умножению
     # (x + 4) * (x + y + z) or (x + y + z) x  ->>> (+ (+ x y) z) = (+ x y z)
     # (* (+ x + y)(+ x z))
+
+# BiOp(Num(6) * BiOp(x * BiOp(x * Num(3)))) (6 * x * 4 * x * 3) -> (18 * x^2)
+# (6 * x^2 * x * 3) -> (18 x^3)
+# (6*x + 3 + (x^3 + x^2 + x/y + x + 3x + 5)) -> 
+
+def getOperands(node, operator):
+    if (isinstance(node, BinaryOpNode) and node.operator == operator):
+        return getOperands(node.left, operator) + getOperands(node.right, operator)
+    return [node]
+
+
+def packOperands(operands, operator):
+    if (len(operands) == 0):
+        return None
+    if (len(operands) == 1):
+        return operands[0]
+    # (((x + y) + 2) + z)          [x, y, 2, z]
+    return BinaryOpNode(packOperands(operands[:-1], operator), operator, operands[-1])
+
+
+def normalize(node):
+    return
+
+# Правила для степений
+# x^1 = x
+# x^0 = 1
+# x^a * x^b = x^(a+b)
+# x
+
+
+def normalizeMult(node):
+    # перестроить дерево 
+    # 
+    if (isinstance(node, BinaryOpNode) and node.operator == "*"):
+        coeff = 1
+        # key - variable.name value - array(node)
+        vars = {}
+        others = []
+        operands = getOperands(node, "*")
+        for op in operands:
+            if (isinstance(op, NumberNode)):
+                coeff *= op.value
+                continue
+            #  x^2*x
+            # vars [x : Num(1)]  x*x^y => x^(1+y)  
+            #   
+            # x^(1 + y + 2)  
+            # x []
+            if (isinstance(op, VariableNode)):  
+                if vars.get(op.name) is None:
+                    vars[op.name] = []
+                vars[op.name] += [NumberNode(1)]
+                continue
+            if (isinstance(op, UnaryOpNode)):
+                if (op.operator == "-"):
+                    coeff *= -1
+                continue
+            if (isinstance(op, BinaryOpNode) and op.operator == "^" and isinstance(op.left, VariableNode)):
+                if (op.left.name is None):
+                    vars[op.left.name] = []
+                vars[op.left.name] += [op.right]
+                continue
+            others.append(op)
+
+        for var in vars:
+            # x^1*x^2
+            # vars = {x [1, 2]}
+            # Binar(..., +, ...)
+            # deg -> BinaryOp
+            vars[var] = normalizeSum(packOperands(vars[var], "+")) 
+
+        # Собрать ноду
+        # ORDER : NUMBER VARIABLE1 VARIABLE2 (ALPHABET PRDER)
+        
+        vars = [BinaryOpNode(VariableNode(var), "^", vars[var]) for var in sorted(list(vars.keys()))] # x^ 3
+
+        coeff = [] if coeff == 1 else [NumberNode(coeff)]
+        operands = coeff + vars + others
+        # [1, x, y, cos]
+        result = packOperands(operands, "*")
+        return result
+    return node   
+
+
+def normalizeSum(node):
+    return node   
+    if (isinstance(node, BinaryOpNode) and node.operator == "+"):
+        vars = {}
+        remainder = 0
+        operands = getOperands(node, "+")
+        for op in operands:
+            if isinstance(op, NumberNode):
+                remainder += op.value
+                continue
+            if isinstance(op, VariableNode):
+                # x + y + x^2 --> vars{x: Var(x), Bin(x)}
+                # x + 2x [key x, value {1, 2}]
+                # x^2 + 2x^2 [key x^2, value: {1, 2}]
+                # x^3*y^4*z^5 + 4*x^3*y^4*z^5 = [key: x^3*y^4*z^5, value : [1, 4]]
+                # x^y*z^y + 4*z^y*x^y -> [key "x^y*z^y"]
+                if (vars[op.name] in None):
+                    vars[op.name] = []
+                vars[op.name] += []
+                continue
+            if (isinstance(op, BinaryOpNode) and op.operator == "^"):
+                return
+     
+            
+        # 2 * x * 4 * y * x * sin(x) -> 8 * x^2 * y * 
+
+
+
+    # 1. Сначала числа, потом переменные
+    # 2. Переменные в единственном экземпляре в алф порядке (*)
+    # 3. При условии одинаковой степении сложить переменные и расположить по убыванию степени
+
+
+def pow(node):
+    return
+
+
+
+# (2 * X * ...* Y * 6)
+# (2 + ... + 6)
+# 
+
+
 
 
 # Приведение

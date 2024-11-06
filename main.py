@@ -1,5 +1,6 @@
 from parser import parse, print_tree, prettify
 from calc import calc
+from simplify.simplify import getOperands, normalizeMult
 # from flask import Flask, request, jsonify
 # from flask_cors import CORS
 
@@ -30,8 +31,12 @@ if __name__=="__main__":
     # app.run(debug=True)
 
     data  = '''
-    3*(6+(x+y)^(1+1))
+        2*x*x^4
     '''
+    # 2 * (3 * b)
+
+# BiOp(Num(6) * BiOp(x * BiOp(x * Num(3))))
+
 
 # 2(x-y)(x-y)
 # 2(xx-xy-yx+yy)=2xx-2xy-2yx+2yy
@@ -44,9 +49,10 @@ if __name__=="__main__":
     # - (z * (x - y)) ->  (zx - zy) 
 
     result = parse(data)
-    print_tree(result)
-    print(prettify(result))
+    # print(normalizeMult(result))
+    # print_tree(result)
+    print(prettify(normalizeMult(result)))
 
-    result = calc(result)
-    print_tree(result)
-    print(prettify(result))
+    # result = calc(result)
+    # print_tree(result)
+    # print(prettify(result))
