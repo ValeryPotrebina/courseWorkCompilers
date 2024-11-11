@@ -1,21 +1,10 @@
-class Node:
-    # def parts_str(self):
-    #     st = []
-    #     for part in self.parts:
-    #         st.append(str(part))
-    #     return "\n".join(st)
+class Node():
+    def __hash__(self):
+        raise NotImplementedError("Subclasses should implement this!")
 
-    # def __repr__(self):
-    #     return self.type + ":\n\t" + self.parts_str().replace("\n", "\n\t")
+    def __eq__(self, other):
+        raise NotImplementedError("Subclasses should implement this!")
 
-    # def add_parts(self, parts):
-    #     self.parts += parts
-    #     return self
-
-    # def __init__(self, type, parts):
-    #     self.type = type
-    #     self.parts = parts
-    pass
 
 
 class NumberNode(Node):
@@ -24,6 +13,14 @@ class NumberNode(Node):
 
     def __repr__(self):
         return f"NumberNode({self.value})"
+    
+    def __hash__(self):
+        return hash(self.value)
+
+    def __eq__(self, other):
+        if isinstance(other, NumberNode):
+            return self.value == other.value
+        return False
 
 
 class VariableNode(Node):
@@ -32,6 +29,14 @@ class VariableNode(Node):
 
     def __repr__(self):
         return f"VariableNode({self.name})"
+    
+    def __hash__(self):
+        return hash(self.name)
+    
+    def __eq__(self, other):
+        if isinstance(other, VariableNode):
+            return self.name == other.name
+        return False
 
 
 class FunctionNode(Node):
@@ -41,8 +46,15 @@ class FunctionNode(Node):
 
     def __repr__(self):
         return f"FunctionNode({self.name}, {self.arg})"
+    
+    def __hash__(self):
+        return hash((self.name, self.arg))
 
-
+    def __eq__(self, other):
+        if isinstance(other, FunctionNode):
+            return self.name and self.arg
+        return False
+    
 class BinaryOpNode(Node):
     def __init__(self, left, operator, right):
         self.left = left
@@ -51,7 +63,16 @@ class BinaryOpNode(Node):
 
     def __repr__(self):
         return f"BinaryOpNode({self.left}, {self.operator}, {self.right})"
+    
+    def __hash__(self):
+        return hash((self.left, self.operator, self.right))
 
+    def __eq__(self, other):
+        if isinstance(other, BinaryOpNode):
+            return (self.left == other.left and
+                    self.operator == other.operator and
+                    self.right == other.right)
+        return False
 
 class UnaryOpNode(Node):
     def __init__(self, operator, operand):
@@ -60,3 +81,11 @@ class UnaryOpNode(Node):
 
     def __repr__(self):
         return f"UnaryOpNode({self.operator}, {self.operand})"
+
+    def __hash__(self):
+        return hash((self.operator, self.operand))
+
+    def __eq__(self, other):
+        if isinstance(other, UnaryOpNode):
+            return self.operator == other.operator and self.operand == other.operand
+        return False
