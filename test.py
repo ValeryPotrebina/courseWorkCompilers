@@ -1,4 +1,5 @@
 from model import NumberNode, VariableNode, BinaryOpNode, FunctionNode, UnaryOpNode
+from simplify.simplify import getLeftOperands
 
 if __name__=="__main__":
     vars = {}
@@ -17,6 +18,8 @@ vars[key2.name] += value2
 
 print(vars)
 
+
+print(getLeftOperands())
 
 # 2 * x  -> Lest = numberNode right = node
 # vars {var(x) [2]}

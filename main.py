@@ -31,10 +31,12 @@ if __name__=="__main__":
     # app.run(debug=True)
 
 
-# TODO: 2*(x*y)*(x*y)^2
+# TODO: 2*(x*y)*(x*y)^2 (работает)
+# 2*(x*x)*4 + 2 +  x^2 + 4
+# 
 
     data  = '''
-         x*y + x*y
+      2^(2^3)
     '''
     # 2 * (3 * b)
 
