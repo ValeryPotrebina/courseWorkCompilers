@@ -11,14 +11,11 @@ multDist = ["+", "-"]
 
 
 def simplify(node):
-    # a = distributivity(node)
-    # # print("simpleCalculation", a)
-    # b = simpleCalculation(a)
-    # # print("distributivity", b)
-    # c = descentUnary(b)
-    # print("descentUnary", c)
-    d = normalize(node)
-    return d
+    node = distributivity(node)
+    print("distributivity: ", node)
+    node = normalize(node)
+    print("normalize: ", node)
+    return node
 
 
 def simpleCalculation(node):
@@ -74,27 +71,6 @@ def simpleCalculation(node):
     return node
     # sin (2 + 3)
 
-
-def commutativity(node):
-    if (isinstance(node, BinaryOpNode) and (node.operator in commutativeOps)):
-        return BinaryOpNode(node.right, node.operator, node.left)
-    return node
-
-
-def associativity(node):
-    if (isinstance(node, BinaryOpNode) and node.operator in associativeOps):
-        if (isinstance(node.left, BinaryOpNode) and node.left.operator == node.operator):
-            # Левая ассоциативность (a + b) + c -> a + (b + c)
-            # (+ (+ a b) c) -> (+ a (+ b c))
-            return BinaryOpNode(node.left.left, node.operator, BinaryOpNode(node.left.right, node.operator, node.right))
-        if (isinstance(node.right, BinaryOpNode) and node.right.operator == node.operator):
-            return BinaryOpNode(BinaryOpNode(node.left, node.operator, node.right.left), node.operator, node.right.right)
-
-
-# 5 - 2 - 3
-# - x
-# (* x (+ 2 4)) -> (* x 6)
-# (2^3)^4 (8^4) = 2^(3^4) (2^81)
 
 def distributivity(node):
     if isinstance(node, BinaryOpNode):
@@ -296,8 +272,6 @@ def getOperands(node, operator):
     if (isinstance(node, BinaryOpNode) and node.operator == operator):
         return getOperands(node.left, operator) + getOperands(node.right, operator)
     return [node]
-
-
 def packOperands(operands, operator):
     if (len(operands) == 0):
         return None
@@ -305,9 +279,6 @@ def packOperands(operands, operator):
         return operands[0]
     # (((x + y) + 2) + z)          [x, y, 2, z]
     return BinaryOpNode(packOperands(operands[:-1], operator), operator, operands[-1])
-
-
-
 def normalize(node):
     if (isinstance(node, BinaryOpNode)):
         if (node.operator == "*"):
@@ -318,6 +289,7 @@ def normalize(node):
             return normalizePow(node)
         if (node.operator == "-"):
             return normalizeMinus(node)
+        # if 
         return BinaryOpNode(normalize(node.left), node.operator, normalize(node.right))
     if (isinstance(node, FunctionNode)):
         return normalizeFunction(node)
@@ -344,6 +316,7 @@ def normalizeMult(node):
         vars = {}
         others = []
         operands = getOperands(node, "*")
+        
         print("operands (mult): ", operands)
         for op in operands:
             op = normalize(op)
@@ -363,31 +336,55 @@ def normalizeMult(node):
                     vars[op.left] = []
                 vars[op.left] += [op.right]
                 continue
-            others.append(op)
             print("others: ", others)
+            if (isinstance(op, FunctionNode)): 
+                if not op in vars:
+                    vars[op] = []
+                vars[op] += [NumberNode(1)]
+                continue
+            others.append(op)
+        
+        if (coeff == 0):
+            return NumberNode(0)
+                  
         for var in vars:
             # x^1*x^2
             # vars = {x [1, 2]}
             # Binar(..., +, ...)
             # deg -> BinaryOp
-            vars[var] = normalizeSum(packOperands(vars[var], "+")) 
-
-        # Собрать ноду
-        # ORDER : NUMBER VARIABLE1 VARIABLE2 (ALPHABET PRDER)
-        
-        vars = [BinaryOpNode(var, "^", vars[var]) for var in list(vars.keys())] # x^ 3
+            vars[var] = normalize(packOperands(vars[var], "+")) 
+        vars = [normalize(BinaryOpNode(var, "^", vars[var])) for var in sortMultOperands(list(vars.keys()))] # x^ 3
         # print("vars2: ", vars)
 
-        coeff = [NumberNode(coeff)]
+        coeff = [] if coeff == 1 else [NumberNode(coeff)]
         # Порядок 
         operands = coeff + vars + others
+
+        
         print("operands (mult): ", operands)
 
         # [1, x, y, cos]
-        return packOperands(operands, "*")
+        return packOperands(operands, "*") 
     return node   
 
-
+def sortMultOperands(operands):
+    vars = []
+    functions = []
+    groups = []
+    for op in operands:
+        if (isinstance(op, VariableNode)):
+            vars.append(op)
+        elif (isinstance(op, FunctionNode)):
+            functions.append(op)
+        elif (isinstance(op, BinaryOpNode)):
+            groups.append(op)
+    vars = sorted(vars, key=lambda x: x.name)
+    functions = sorted(functions, key=lambda x: x.name)
+    # 
+    # x^2*y^2
+    # groups = [Bin(x, "^", 2), Bin(y, "^", 3)]
+    return vars + functions + groups
+    
 def normalizeSum(node):
     print("node: ", node)
     if (isinstance(node, BinaryOpNode) and node.operator == "+"):
@@ -422,10 +419,11 @@ def normalizeSum(node):
             if (isinstance(op, BinaryOpNode) and op.operator == "*"):
                 termOperands = getOperands(op, "*")
                 print("termOperands: ", termOperands)
-                coeff = termOperands[0]
+                coeff = termOperands[0] if isinstance(termOperands[0], NumberNode) else NumberNode(1)
                 # termOperand = [2, x, y]
                 # ((2 * x) * y) -> 2 * (x * y)
-                monomial = packOperands(termOperands[1:], "*")
+                monomial = termOperands[1:] if isinstance(termOperands[0], NumberNode) else termOperands
+                monomial = packOperands(monomial, "*")
                 print("monomial: ", monomial)
                 if (not monomial in vars):
                     vars[monomial] = 0
@@ -442,17 +440,19 @@ def normalizeSum(node):
 # key - Node, value = coeff
 # return summ coeff * key
 
+
         vars = [
-            BinaryOpNode(
+            normalize(BinaryOpNode(
                 NumberNode(vars[monomial] ),
                 "*",
                 monomial
-            )
+            ))
             for monomial in list(vars.keys())
         ]
         print("vars (sum): ", vars)
         remainder = [] if remainder == 0 else [NumberNode(remainder)]
-        return packOperands(remainder + vars, "+")
+        operands = vars + remainder
+        return packOperands(operands, "+") if len(operands) > 0 else NumberNode(0)
 
     return node 
         # 2 * x * 4 * y * x * sin(x) -> 8 * x^2 * y * 
@@ -515,15 +515,20 @@ def normalizePow(node):
     # TODO: ДОДЕЛАТЬ
     if (isinstance(node, BinaryOpNode) and node.operator == "^"):
         operands = [normalize(op) for op in getLeftOperands(node, "^")]
+
         base = operands[0]
         degree = normalize(packOperands(operands[1:], "*"))   
+
         if (isinstance(base, NumberNode)):
             if (isinstance(degree, BinaryOpNode) and (degree.operator == "*")):
                 # 2^3^(x*sinx) -> 8^(x*sinx)
                 degreeOps = getOperands(degree, "*")
-                degreeCoeff = degreeOps[0]
-                base = NumberNode(pow(base, degreeCoeff.value))
-                degree = packOperands(degreeOps[1:], "*")
+
+                degreeCoeff = degreeOps[0] if isinstance(degreeOps[0], NumberNode) else NumberNode(1)
+                degreeOps = degreeOps[1:] if isinstance(degreeOps[0], NumberNode) else degreeOps
+
+                degree = packOperands(degreeOps, "*")
+                base = NumberNode(pow(base.value, degreeCoeff.value))
             if (isinstance(degree, NumberNode)):
                 return NumberNode(pow(base.value, degree.value))
             # if (isinstance(degree, BinaryOpNode) and (degree.operator == "+")):

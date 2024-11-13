@@ -36,7 +36,7 @@ if __name__=="__main__":
 # 
 
     data  = '''
-      2^(2^3)
+      y * sin(y*x) *x 
     '''
     # 2 * (3 * b)
 
@@ -59,3 +59,10 @@ if __name__=="__main__":
     # result = calc(result)
     # print_tree(result)
     # print(prettify(result))
+
+
+'''
+1. Решить уравнение
+2. Вывести график
+3. Сервак подрубить 
+'''
