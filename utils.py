@@ -27,10 +27,10 @@ def prettify(node):
         return f"{node.name}({prettify(node.arg)})"
     if isinstance(node, BinaryOpNode):
         left = prettify(node.left)
-        if isinstance(node.left, BinaryOpNode) and node.left.operator == node.operator:
+        if isinstance(node.left, BinaryOpNode) and node.operator in ["+", "-", "*", "/", "^"] and node.left.operator == node.operator:
             left = left[1:-1]
         right = prettify(node.right)
-        if isinstance(node.right, BinaryOpNode) and node.right.operator == node.operator:
+        if isinstance(node.right, BinaryOpNode) and node.operator in ["+", "-"] and node.right.operator == node.operator:
             right = right[1:-1]
         return f"({left} {node.operator} {right})"
     if isinstance(node, UnaryOpNode):

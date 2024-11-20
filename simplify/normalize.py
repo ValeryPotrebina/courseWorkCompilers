@@ -147,6 +147,15 @@ def normalizeMult(node):
     return node
 
 def normalizeDivision(node):
+    if isinstance(node, BinaryOpNode) and node.operator == "/":
+        left = normalize(node.left)
+        right = normalize(node.right)
+        # (x + 1) / (x + 1) = 1
+        if (left == right):
+            return NumberNode(1)
+        # 4 / 2 = 2
+        if (isinstance(left, NumberNode) and isinstance(right, NumberNode)):
+            return NumberNode(left.value / right.value)
     return node
 
 
