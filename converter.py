@@ -23,7 +23,7 @@ def colectVariables(node):
 
 def convert(node):
     vars = sorted(colectVariables(node))
-    return convertNode(node, vars)
+    return vars, convertNode(node, vars)
 
 def convertNode(node, vars):
     if isinstance(node, NumberNode):
