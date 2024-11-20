@@ -1,6 +1,7 @@
 from parser import parse, print_tree, prettify
 from calc import calc
 from simplify.simplify import simplify, getOperands, normalizeMult
+from simplify.converter import convert, colectVariables, convertNode, generate_random_numbers
 # from flask import Flask, request, jsonify
 # from flask_cors import CORS
 
@@ -38,20 +39,12 @@ if __name__=="__main__":
 # Сортировка
 # y * sin(y*x) *x 
 
-# 
+# TODO Tests
+#  
 
     data  = '''
-      
+        (2 * x + x * y + 2*sin(x) + sin(x))
     '''
-
-
-# Сортировка по сложению
-# normalize по делению  
-#  
-    # 2 * (3 * b)
-
-# BiOp(Num(6) * BiOp(x * BiOp(x * Num(3))))
-
 
 # 2(x-y)(x-y)
 # 2(xx-xy-yx+yy)=2xx-2xy-2yx+2yy
@@ -64,11 +57,19 @@ if __name__=="__main__":
     # - (z * (x - y)) ->  (zx - zy) 
 
     result = parse(data)
-    print(prettify(simplify(result)))
+    result = simplify(result)
+    print_tree(result)
+    print(prettify(result))
 
-    # result = calc(result)
-    # print_tree(result)
-    # print(prettify(result))
+    vars_length = len(colectVariables(result))
+    args = generate_random_numbers(vars_length)
+    print("args: ", args)
+    result = convert(result)(args)
+    print(result)  # Вывод: sin(1) + 2 * 2
+
+    # operands = getOperands(result, "+")
+    # print("operands (main): ", operands)
+
 
 
 '''

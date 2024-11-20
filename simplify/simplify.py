@@ -76,6 +76,9 @@ def distributivity(node):
             return distributivityMult(node)
         if (node.operator == "^"):
             return distributivityPow(node)
+        if (node.operator == "/"):
+            # TODO: distributivityDevision
+            return distributivityDevision()
         return BinaryOpNode(
             distributivity(node.left),
             node.operator,
@@ -93,66 +96,82 @@ def distributivityMult(node: BinaryOpNode):
     left = distributivity(node.left)
     right = distributivity(node.right)
     if node.operator == "*":
+        # 0 * x = 0
         if (isinstance(left, NumberNode) and left.value == 0):
             return NumberNode(0)
+        # x * 0 = 0
         if (isinstance(right, NumberNode) and right.value == 0):
             return NumberNode(0)
+        # 1 * x = x
         if (isinstance(left, NumberNode) and left.value == 1):
             return right
+        # x * 1 = x
         if (isinstance(right, NumberNode) and right.value == 1):
             return left
-        if (isinstance(right, BinaryOpNode) and right.operator in multDist):
-            # TODO x * (y + z) -> x * y + x * z
+        # Multiplication distributivity 
+        if (isinstance(right, BinaryOpNode) and right.operator in ["+", "-"]):
+            # x * (y +|- z) -> x * y +|- x * z
             return distributivity(BinaryOpNode(
                 BinaryOpNode(left, "*", right.left),
                 right.operator,
                 BinaryOpNode(left, "*", right.right))
             )
-        if (isinstance(left, BinaryOpNode) and left.operator in multDist):
-            # TODO (y + z) * x -> x * y + x * z
+        if (isinstance(left, BinaryOpNode) and left.operator in ["+", "-"]):
+            # (y +|- z) * x -> y * x +|- z * x
             return distributivity(BinaryOpNode(
-                BinaryOpNode(left.left, "*", right),
+                BinaryOpNode(
+                    left.left,
+                    "*",
+                    right),
                 left.operator,
-                BinaryOpNode(left.right, "*", right))
+                BinaryOpNode(
+                    left.right, 
+                    "*", 
+                    right))
             )
     return BinaryOpNode(
         left,
         node.operator,
-        right)
-
+        right
+        )
 
 def distributivityPow(node: BinaryOpNode):
     left = distributivity(node.left)
     right = distributivity(node.right)
     if (node.operator == "^"):
-        # TODO x^0 = 1
+        # (че угодно)^0 = 1
         if (isinstance(right, NumberNode) and right.value == 0):
             return NumberNode(1)
-        # TODO 1^(че угодно) = 1 || 0^(че угодно) = 0
+        # (че угодно)^1 = (че угодно)
+        if (isinstance(right, NumberNode) and right.value == 1):
+            return left
+        # 1^(че угодно) = 1 || 0^(че угодно) = 0
+        # 0^0 - exception
         if (isinstance(left, NumberNode) and (left.value == 1 or left.value == 0)):
             return NumberNode(left.value)
-        # TODO (x*y)^n => x^n*y^n, n=число
-        # TODO (xy)^a => x^a*y^a  a=переменная
+        # (x*y)^n => x^n*y^n, n=число
+        # (xy)^a => x^a*y^a  a=переменная
         if (isinstance(left, BinaryOpNode) and left.operator in ["*", "/"]):
             # (left.left left.operator left.right)^right.value => left.left^right.value left.operator left.right^right.value
-            return distributivity(BinaryOpNode(
-                BinaryOpNode(
+            return (BinaryOpNode(
+                # Исправила!
+                distributivity(BinaryOpNode(
                     left.left,
                     node.operator,
                     right
-                ),
+                )),
                 left.operator,
-                BinaryOpNode(
+                distributivity(BinaryOpNode(
                     left.right,
                     node.operator,
                     right
-                )
+                ))
             ))
 
-        # TODO (x+y)^n => (x+y)*(x+y)^(n-1), n=число
-        # TODO (x+y)^a => оставляем также a=переменная
+        # (x+y)^n => (x+y)*(x+y)^(n-1), n=число
+        # (x+y)^a => оставляем также a=переменная
         if (isinstance(left, BinaryOpNode) and left.operator in ["+", "-"]) and isinstance(right, NumberNode):
-            # TODO (x+y)^n => (x+y)*(x+y)^(n-1)
+            # (x+y)^n => (x+y)*(x+y)^(n-1)
             return distributivity(
                 BinaryOpNode(
                     left,
@@ -166,14 +185,7 @@ def distributivityPow(node: BinaryOpNode):
             )
     return BinaryOpNode(left, node.operator, right)
 
-
-# -1(x + y) => -x -y
-
-    # (x+y)^n => (x+y)*(x+y)^(n-1), n=число
-    # (x+y)^a => оставляем также a=переменная
-
-    # x^(a+b)=> x^a*x^b
-
+# Не используется
 def descentUnary(node):
     if (isinstance(node, NumberNode) or isinstance(node, VariableNode)):
         return node
@@ -251,19 +263,6 @@ def descentUnary(node):
         return UnaryOpNode(node.operator, descentUnary(node.operand))
 
 
-# TODO просто примеры для собственного понимания
-        # - (BinOp(* Var(x), BinOp(* z, y)))      -> -(x * -z * y) = -x*y*z
-        # - (BinOp(+ x, y))                       -> -(x + y) = -x + -y
-
-    # - (z * (x + y))
-    # дистрибутивност по умножению
-    # (x + 4) * (x + y + z) or (x + y + z) x  ->>> (+ (+ x y) z) = (+ x y z)
-    # (* (+ x + y)(+ x z))
-
-# BiOp(Num(6) * BiOp(x * BiOp(x * Num(3)))) (6 * x * 4 * x * 3) -> (18 * x^2)
-# (6 * x^2 * x * 3) -> (18 x^3)
-# (6*x + 3 + (x^3 + x^2 + x/y + x + 3x + 5)) ->
-
 # TODO getOperands - получаем массив всех операндов математического выражения
 # например [VariableNode(x), VariableNode(y), BinaryOpNode(VariableNode(x), ^, NumberNode(2.0)), BinaryOpNode(VariableNode(y), ^, NumberNode(2.0))]
 def getOperands(node, operator):
@@ -291,7 +290,9 @@ def normalize(node):
             return normalizePow(node)
         if (node.operator == "-"):
             return normalizeMinus(node)
-        # if
+        if (node.operator == "/"):
+            # TODO: normalizeDevision
+            return normalizeDevision(node)
         return BinaryOpNode(normalize(node.left), node.operator, normalize(node.right))
     if (isinstance(node, FunctionNode)):
         return normalizeFunction(node)
@@ -299,36 +300,24 @@ def normalize(node):
         return normalizeUrary(node)
     return node
 
-# Правила для степений
-# x^1 = x
-# x^0 = 1
-# x^a * x^b = x^(a+b)
-
-
 # normalizeMult
 # сoeff - перемноженные все числовые ноды в операндах
 # vars - мапа, которая содержит в себе key: переменная value: степени этой переменной. Например x^2*x^4 vars = {x: [2, 4]}
 # В результате будет нормализовано умножение. Сначало будет число, а потом переменные по алфавиту
 def normalizeMult(node):
-    # перестроить дерево
-    #
     if (isinstance(node, BinaryOpNode) and node.operator == "*"):
         coeff = 1
-        # key - variable.name value - array(node)
         vars = {}
         others = []
-        operands = getOperands(node, "*")
-
-        # print("operands (mult): ", operands)
+        operands =  [normalize(op) for op in  getOperands(node, "*")]
         for op in operands:
-            op = normalize(op)
             if (isinstance(op, UnaryOpNode)) and op.operator in ["+", "-"]:
                 coeff *= 1 if op.operator == "+" else -1
                 op = normalize(op.operand)
             if (isinstance(op, NumberNode)):
                 coeff *= op.value
                 continue
-            if (isinstance(op, VariableNode)):
+            if (isinstance(op, VariableNode) or isinstance(op, FunctionNode)):
                 if not op in vars:
                     vars[op] = []
                 vars[op] += [NumberNode(1)]
@@ -338,98 +327,60 @@ def normalizeMult(node):
                     vars[op.left] = []
                 vars[op.left] += [op.right]
                 continue
-            # print("others: ", others)
-            if (isinstance(op, FunctionNode)):
-                if not op in vars:
-                    vars[op] = []
-                vars[op] += [NumberNode(1)]
-                continue
+            # TODO: добавить деление 
             others.append(op)
 
         if (coeff == 0):
             return NumberNode(0)
 
+# vars {key: node, value: [coeff1, coeff2, ...]}
         for var in vars:
-            # x^1*x^2
-            # vars = {x [1, 2]}
-            # Binar(..., +, ...)
-            # deg -> BinaryOp
+            # sumDegree ->
+            # для каждого ключа vars запакуем массив со степенями (сложим) и нормализуем, тем самым посчитав степени
             vars[var] = normalize(packOperands(vars[var], "+"))
+            
         vars = [normalize(BinaryOpNode(var, "^", vars[var]))
                 for var in sorted(list(vars.keys()), key=multKeyFunc)]  # x^ 3
-        # print("vars2: ", vars)
+        print("VARS ", vars)
 
         coeff = [] if coeff == 1 else [NumberNode(coeff)]
-        # Порядок
         operands = coeff + vars + others
-
         # print("operands (mult): ", operands)
-
-        # [1, x, y, cos]
         return packOperands(operands, "*")
     return node
 
 
 def multKeyFunc(operands):
-    # False True
+    # [False True]
     def getName(x):
         if isinstance(operands, VariableNode) or isinstance(operands, FunctionNode):
             return x.name
         return ''
-
     return (
         not isinstance(operands, VariableNode),
         not isinstance(operands, FunctionNode),
         not isinstance(operands, BinaryOpNode),
         getName(operands),
     )
-    vars = []
-    functions = []
-    groups = []
-    for op in operands:
-        if (isinstance(op, VariableNode)):
-            vars.append(op)
-        elif (isinstance(op, FunctionNode)):
-            functions.append(op)
-        elif (isinstance(op, BinaryOpNode)):
-            groups.append(op)
-    vars = sorted(vars, key=lambda x: x.name)
-    functions = sorted(functions, key=lambda x: x.name)
-    #
-    # x^2*y^2
-    # groups = [Bin(x, "^", 2), Bin(y, "^", 3)]
-    return vars + functions + groups
 
 
 def normalizeSum(node):
-    # сортировка
-    # x^n + ..._  x^1 + x^2y^2 (смотрим по суммартой степени) + sin(x) and others functions 12 number
-    # print("node: ", node)
     if (isinstance(node, BinaryOpNode) and node.operator == "+"):
-        # x^2y^2z^2u^2 + 2x^2z^2u^2y^2
-        # vars {key: BinOp(x, ^, 2), value [1, 2]}
+        # vars = {key: node, value: [coeff1, coeff2, ...]}
         vars = {}
         remainder = 0
         operands = [normalize(op) for op in getOperands(node, "+")]
-        print("operands (sum): ", operands)
-
-        # [2x^(1+3), 5x, 4, 2, y, y^2, x^2, 2x^2]
+        # print("operands (sum): ", operands)
         for op in operands:
             if isinstance(op, NumberNode):
                 remainder += op.value
                 continue
             if isinstance(op, UnaryOpNode) and isinstance(op.operand, NumberNode):
-                # TODO
                 if (op.operator == "-"):
                     remainder -= op.operand
                 if (op.operator == "+"):
                     remainder += op.operand
             if isinstance(op, VariableNode):
-                # x + y + x^2 --> vars{x: Var(x), Bin(x)}
-                # x + 2x [key x, value {1, 2}]
-                # x^2 + 2x^2 [key x^2, value: {1, 2}]
-                # x^3*y^4*z^5 + 4*x^3*y^4*z^5 = [key: x^3*y^4*z^5, value : [1, 4]]
-                # x^y*z^y + 4*z^y*x^y -> [key "x^y*z^y"]
                 if (not op in vars):
                     vars[op] = 0
                 vars[op] += 1
@@ -437,22 +388,19 @@ def normalizeSum(node):
             if (isinstance(op, BinaryOpNode) and op.operator == "*"):
                 termOperands = getOperands(op, "*")
                 print("termOperands: ", termOperands)
-                coeff = termOperands[0] if isinstance(
-                    termOperands[0], NumberNode) else NumberNode(1)
+                coeff = termOperands[0] if isinstance(termOperands[0], NumberNode) else NumberNode(1)
                 # termOperand = [2, x, y]
                 # ((2 * x) * y) -> 2 * (x * y)
-                monomial = termOperands[1:] if isinstance(
-                    termOperands[0], NumberNode) else termOperands
+                monomial = termOperands[1:] if isinstance(termOperands[0], NumberNode) else termOperands
                 monomial = packOperands(monomial, "*")
                 print("monomial: ", monomial)
                 if (not monomial in vars):
                     vars[monomial] = 0
-                    # TODO: ПРОВЕРИТЬ
                 vars[monomial] += coeff.value
                 continue
 
             monomial = op
-            print("monomial: ", monomial)
+            print("monomial??: ", monomial)
             if (not monomial in vars):
                 vars[monomial] = 0
                 # TODO: ПРОВЕРИТЬ

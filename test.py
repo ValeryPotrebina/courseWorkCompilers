@@ -1,18 +1,22 @@
 from model import NumberNode, VariableNode, BinaryOpNode, FunctionNode, UnaryOpNode
-from simplify.simplify import getLeftOperands, sortAddOperands
-
+from simplify.simplify import getLeftOperands
+import random
 if __name__=="__main__":
-    key0 = VariableNode("x")
-    key1 = BinaryOpNode(VariableNode("x"), "^", NumberNode(2))
-    key2 = BinaryOpNode(VariableNode("x"), "^", NumberNode(3))
-    key5 = BinaryOpNode(VariableNode("x"), "^", NumberNode(-1))
-    key3 = BinaryOpNode(FunctionNode("sin", VariableNode("x")), "^", NumberNode(3))
-    key4 = BinaryOpNode("x", "^", "y")
-    vars = [key1, key2, key3, key4, key0, key5]
+    # key0 = VariableNode("x")
+    # key1 = BinaryOpNode(VariableNode("x"), "^", NumberNode(2))
+    # key2 = BinaryOpNode(VariableNode("x"), "^", NumberNode(3))
+    # key5 = BinaryOpNode(VariableNode("x"), "^", NumberNode(-1))
+    # key3 = BinaryOpNode(FunctionNode("sin", VariableNode("x")), "^", NumberNode(3))
+    # key4 = BinaryOpNode("x", "^", "y")
+    # vars = [key1, key2, key3, key4, key0, key5]
 
     
-    print(sortAddOperands(vars))
-
+    # print(sortAddOperands(vars))
+    num_variables = 10
+    arr = []
+    for _ in range(num_variables):
+        arr.append(random.random())
+    print(arr)
 # 2 * x  -> Lest = numberNode right = node
 # vars {var(x) [2]}
 # 2 * Binary(x * y)
