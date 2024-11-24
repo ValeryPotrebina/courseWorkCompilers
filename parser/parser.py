@@ -8,10 +8,8 @@ from ply import yacc
 from .lexer import tokens
 from model import NumberNode, VariableNode, BinaryOpNode, FunctionNode, UnaryOpNode
 
-# ЗАЧЕМ НАМ СЛОВАРЬ
 names = {}
 
-# КАК РАБОТАЮТ ПРИОРИТЕТЫ
 precedence = (
     ('left', 'COMPARE'),
     ('left', 'PLUS', 'MINUS'),
