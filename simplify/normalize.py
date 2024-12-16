@@ -5,13 +5,14 @@ import math
 def normalize(node):
     if (isinstance(node, BinaryOpNode)):
         if (node.operator == "+"):
+            # print("aa")
             return normalizeSum(node)
         if (node.operator == "-"):
             return normalizeMinus(node)
         if (node.operator == "*"):
             return normalizeMult(node)
         if (node.operator == "/"):
-            # TODO: normalizeDivision
+            # print("cccccc")
             return normalizeDivision(node)
         if (node.operator == "^"):
             return normalizePow(node)
@@ -46,13 +47,13 @@ def normalizeSum(node):
                 continue
             if (isinstance(op, BinaryOpNode) and op.operator == "*"):
                 termOperands = getOperands(op, "*")
-                print("termOperands: ", termOperands)
+                # print("termOperands: ", termOperands)
                 coeff = termOperands[0] if isinstance(termOperands[0], NumberNode) else NumberNode(1)
                 # termOperand = [2, x, y]
                 # ((2 * x) * y) -> 2 * (x * y)
                 monomial = termOperands[1:] if isinstance(termOperands[0], NumberNode) else termOperands
                 monomial = packOperands(monomial, "*")
-                print("monomial: ", monomial)
+                # print("monomial: ", monomial)
                 if (not monomial in vars):
                     vars[monomial] = 0
                 vars[monomial] += coeff.value
@@ -75,7 +76,7 @@ def normalizeSum(node):
             ))
             for monomial in sorted(list(vars.keys()), key=addKeyFunc)
         ]
-        print("vars (sum): ", vars)
+        # print("vars (sum): ", vars)
 
         remainder = [] if remainder == 0 else [NumberNode(remainder)]
         operands = vars + remainder
@@ -138,7 +139,7 @@ def normalizeMult(node):
             
         vars = [normalize(BinaryOpNode(var, "^", vars[var]))
                 for var in sorted(list(vars.keys()), key=multKeyFunc)]  # x^ 3
-        print("VARS ", vars)
+        # print("VARS ", vars)
 
         coeff = [] if coeff == 1 else [NumberNode(coeff)]
         operands = coeff + vars + others
@@ -147,15 +148,25 @@ def normalizeMult(node):
     return node
 
 def normalizeDivision(node):
+    # print("BBBBBBB")
     if isinstance(node, BinaryOpNode) and node.operator == "/":
         left = normalize(node.left)
+        # print("left: ", left)
         right = normalize(node.right)
+        # print("right: ", right)
         # (x + 1) / (x + 1) = 1
         if (left == right):
             return NumberNode(1)
         # 4 / 2 = 2
         if (isinstance(left, NumberNode) and isinstance(right, NumberNode)):
             return NumberNode(left.value / right.value)
+        if (isinstance(left, BinaryOpNode) and left.operator in ["+", "-", "*"]):
+            # print("AAAAAAAA")
+            return BinaryOpNode(
+                normalize(BinaryOpNode(left.left, "/", right)),
+                left.operator,
+                normalize(BinaryOpNode(left.right, "/", right))
+            )
     return node
 
 

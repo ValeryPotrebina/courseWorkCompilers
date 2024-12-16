@@ -50,21 +50,21 @@ FUNCTION -> IDENT | IDENT OPERATION IDENT | E
 # 1 + 2 * 3
 
 
-s           ->   expression COMPARE expression
+expression  ->   expression COMPARE expression
                  expression PLUS expression  |
                  expression MINUS expression |
                  expression MULT expression  |
                  expression DIV expression   |
                  expression POW expression   | 
-                 expression
 
-expression  ->   unar expression |
-                 VAR | 
-                 NUMBER | 
-                 LPAREN expression RPAREN | 
-                 
-                 
-                
+expression  ->   unar expression            |
+                 VAR                        | 
+                 NUMBER                     | 
+                 LPAREN expression RPAREN   |     
+
+expression  ->   FUNCTION LPAREN expression RPAREN |
+                 FUNCTION VAR          
+
 unar        ->   MINUS | PLUS                
             
 

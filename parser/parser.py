@@ -1,9 +1,3 @@
-# ------------------------------------------------------------
-# calcparse.py
-#
-# parser for a simple expression evaluator for
-# numbers and +,-,*,/
-# ------------------------------------------------------------
 from ply import yacc
 from .lexer import tokens
 from model import NumberNode, VariableNode, BinaryOpNode, FunctionNode, UnaryOpNode
@@ -31,9 +25,7 @@ def p_calc(p):
                   | expression MULT expression  
                   | expression DIV expression   
                   | expression POW expression'''
-    # p[0] = p[1] + p[3]
     p[0] = BinaryOpNode(p[1], p[2], p[3])
-    # print(p[0], p[1], p[2], p[3])
 
 
 def p_expression_group(p):
@@ -45,12 +37,9 @@ def p_expression_var(p):
     'expression : VAR'
     p[0] = VariableNode(p[1])
 
-
 def p_expression_num(p):
     'expression : NUMBER'
     p[0] = NumberNode(p[1])
-
-
 def p_expression_uminus(p):
     # Указываем приоритет унарного минуса
     'expression : MINUS expression %prec UMINUS'
@@ -72,7 +61,6 @@ def p_error(p):
 
 
 parser = yacc.yacc()
-
 
 
 

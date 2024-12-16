@@ -43,21 +43,13 @@ def distributivityMult(node: BinaryOpNode):
             return distributivity(BinaryOpNode(
                 BinaryOpNode(left, "*", right.left),
                 right.operator,
-                BinaryOpNode(left, "*", right.right))
-            )
+                BinaryOpNode(left, "*", right.right)))
         if (isinstance(left, BinaryOpNode) and left.operator in ["+", "-"]):
             # (y +|- z) * x -> y * x +|- z * x
             return distributivity(BinaryOpNode(
-                BinaryOpNode(
-                    left.left,
-                    "*",
-                    right),
+                BinaryOpNode(left.left, "*", right),
                 left.operator,
-                BinaryOpNode(
-                    left.right, 
-                    "*", 
-                    right))
-            )
+                BinaryOpNode(left.right, "*", right)))
     return BinaryOpNode(
         left,
         node.operator,
@@ -81,9 +73,7 @@ def distributivityPow(node: BinaryOpNode):
         # (x*y)^n => x^n*y^n, n=число
         # (xy)^a => x^a*y^a  a=переменная
         if (isinstance(left, BinaryOpNode) and left.operator in ["*", "/"]):
-            # (left.left left.operator left.right)^right.value => left.left^right.value left.operator left.right^right.value
             return (BinaryOpNode(
-                # Исправила!
                 distributivity(BinaryOpNode(
                     left.left,
                     node.operator,
