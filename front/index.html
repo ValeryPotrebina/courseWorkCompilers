@@ -4,37 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Math Solver</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-        }
-        input, button {
-            padding: 10px;
-            margin: 5px 0;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .result {
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
@@ -43,38 +13,6 @@
         <button onclick="solveMath()">Solve</button>
         <div id="result" class="result"></div>
     </div>
-
-    <script>
-        function solveMath() {
-            const mathInput = document.getElementById('mathInput').value;
-            const resultDiv = document.getElementById('result');
-
-            // Проверка на пустое поле ввода
-            if (!mathInput) {
-                resultDiv.innerText = 'Error: Please enter a math expression.';
-                return;
-            }
-
-            // Отправка данных на бэкенд
-            fetch('http://127.0.0.1:5000/solve', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ expression: mathInput })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    resultDiv.innerText = `Error: ${data.error}`;
-                } else {
-                    resultDiv.innerText = `Result: ${data.result}`;
-                }
-            })
-            .catch(error => {
-                resultDiv.innerText = 'Error: ' + error.message;
-            });
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

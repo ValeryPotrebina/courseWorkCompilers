@@ -1,41 +1,35 @@
 import numpy as np
-from scipy.optimize import minimize
+import matplotlib.pyplot as plt
 
-# Пример функции, корни которой мы хотим найти
-def f(x, y):
-    return x**2 - y**2
+# Уравнение круга
+x = np.linspace(-1.5, 1.5, 400)
+y = np.linspace(-1.5, 1.5, 400)
+x, y = np.meshgrid(x, y)
+circle = x**2 + y**2 - 1
 
-# Преобразуем функцию для минимизации
-def g(xy):
-    x, y = xy
-    return f(x, y)**2
+plt.contour(x, y, circle, [0])
+plt.title('Круг: $x^2 + y^2 = 1$')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.grid(True)
+plt.show()
 
-# Функция для нахождения корней с разными начальными точками
-def find_roots(initial_points, tol=1e-6):
-    roots = []
-    for x0 in initial_points:
-        res = minimize(g, x0, method='BFGS', options={'disp': False})
-        print(res)
-        root = np.round(res.x, 4)
-        if not any(np.allclose(root, r, atol=tol) for r in roots):
-            roots.append(root)
-    return roots
+# Уравнение гиперболы
+hyperbola = x**2 - y**2 - 1
 
-# Начальные точки для оптимизации
-initial_points = [
-    np.array([1.0, 1.0]),
-    np.array([-1.0, 1.0]),
-    np.array([1.0, -1.0]),
-    np.array([-1.0, -1.0]),
-    np.array([2.0, 2.0]),
-    np.array([-2.0, 2.0]),
-    np.array([2.0, -2.0]),
-    np.array([-2.0, -2.0]),
-]
+plt.contour(x, y, hyperbola, [0])
+plt.title('Гипербола: $x^2 - y^2 = 1$')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.grid(True)
+plt.show()
 
-# Нахождение всех корней
-roots = find_roots(initial_points)
+# Уравнение эллипса
+ellipse = x**2 + 2*y**2 - 1
 
-print("Найденные корни уравнения:")
-for root in roots:
-    print(root)
+plt.contour(x, y, ellipse, [0])
+plt.title('Эллипс: $x^2 + 2y^2 = 1$')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.grid(True)
+plt.show()
