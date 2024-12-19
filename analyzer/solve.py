@@ -2,7 +2,7 @@ from scipy.optimize import minimize
 from .utils import generate_points, quadratize, check_root
 import numpy as np
 
-def solve(f, vars, tol=1e-6, root_count=4, max_iter=100):
+def solve(f, vars, tol=1e-6, root_count=6, max_iter=1000):
     g = quadratize(f)
     roots = []
     while True:

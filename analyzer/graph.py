@@ -20,7 +20,7 @@ def generate_points(vars_count, min=-1, max=1, n=1000):
     
     arg_values = np.linspace(min, max, n)
 
-    [[1], 2, 3, 4, 5, 6]
+    # [[1], 2, 3, 4, 5, 6]
 
     if vars_count == 1:
         # [[1], [2], 3, 4, 5, 6]
@@ -28,3 +28,5 @@ def generate_points(vars_count, min=-1, max=1, n=1000):
     if vars_count == 2:
         # [[1, 2], [2, 3], 3, 4, 5, 6]
         return [[x, y] for x in arg_values for y in arg_values]
+    
+    

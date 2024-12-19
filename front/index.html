@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Math Solver</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,6 +14,12 @@
         <input type="text" id="mathInput" placeholder="Enter your math expression">
         <button onclick="solveMath()">Solve</button>
         <div id="result" class="result"></div>
+        <div id="roots" class="roots">
+            <h2>Roots:</h2>
+            <ul id="rootsList"></ul>
+        </div>
+        <div id="points" class="graph"></div>
+        <div id="graph" class="graph"></div>
     </div>
     <script src="script.js"></script>
 </body>
