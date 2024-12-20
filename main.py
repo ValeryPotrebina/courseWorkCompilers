@@ -10,7 +10,7 @@ import  numpy as np
 
 app = Flask(__name__)
 CORS(app)  # Включаем поддержку CORS
-@app.route('/solve', methods=['POST'])
+@app.route('/api/solve', methods=['POST'])
 def solve():
     data = request.get_json()
     expression = data.get('expression')
@@ -22,18 +22,15 @@ def solve():
         print("res", res)
     
         vars, f = convert(result)
+        # print("vars", vars)
+        # print("f", f)
 
         roots, points = analyze(f, vars)
 
-        # for root in roots:
-            # print(", ".join([f"{vars[i]} = {root[i]:.6f}" for i in range(len(vars))]) + f", f = {f(root):.6f}")
-
-        # for point in points:
-            # print(", ".join([f"{vars[i]} = {point['point'][i]:.6f}" for i in range(len(vars))]) + f", f = {point['value']:.6f}")
-        # print("roots: ", roots)
-
-        roots = [root.tolist() if isinstance(root, np.ndarray) else root for root in roots]
-        points = [point.tolist() if isinstance(point, np.ndarray) else point for point in points]
+        print("roots", roots)
+        # print("points", points)
+        # roots = [root.tolist() if isinstance(root, np.ndarray) else root for root in roots]
+        # points = [point.tolist() if isinstance(point, np.ndarray) else point for point in points]
 
         # print("roots: ", roots)
         # print("points: ", points)
@@ -58,40 +55,11 @@ def solve():
 # 
 # sin(x)  ----> Добавить pi в ответ TODO Доработать (-)
 # x^3-6*x^2+11*x-6 (+)
-# e^x-1  ----->Добавить e, pi (-)
+# e^x-1      ----->Добавить e, pi (-)
 # log(x)(-)
 # x^4 - 64 (+) но нет комплексных чисел
 # x^2 + y^2 + z^2 - 1
 
 if __name__=="__main__":
-    app.run(debug=True)
-
-    # data  = '''
-    # x^2
-    # '''
-
-    # result = parse(data)
-    # result = simplify(result)
-    # print_tree(result)
-    # print(prettify(result))
-    
-    # vars, f = convert(result)
-
-    # roots, points = analyze(f, vars)
-    
-
-
-    # for root in roots:
-    #     print(", ".join([f"{vars[i]} = {root[i]:.6f}" for i in range(len(vars))]) + f", f = {f(root):.6f}")
-
-    # for point in points:
-    #     print(", ".join([f"{vars[i]} = {point['point'][i]:.6f}" for i in range(len(vars))]) + f", f = {point['value']:.6f}")
-    # print("roots: ", roots)
-
-
-    # print("vars: ", vars)
-    # print("func: ", func)
-    # vars_length = len(vars)
-    # args = generate_random_numbers(vars_length)
-    # result = func(args)
+    app.run(debug=True, port=9000)
 

@@ -11,8 +11,14 @@
 <body>
     <div class="container">
         <h1>Math Solver</h1>
-        <input type="text" id="mathInput" placeholder="Enter your math expression">
-        <button onclick="solveMath()">Solve</button>
+        <form id="mathForm">
+            <input type="text" id="mathInput" placeholder="Enter your math expression">
+            <button id="submitButton" class="submit-btn">
+                <span class="loader"></span>
+                <span class="text">Solve</span>
+            </button>
+        </form>
+        
         <div id="result" class="result"></div>
         <div id="roots" class="roots">
             <h2>Roots:</h2>

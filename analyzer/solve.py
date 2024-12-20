@@ -16,7 +16,7 @@ def solve(f, vars, tol=1e-6, root_count=6, max_iter=1000):
             if not check_root(f, x, tol=tol):
                 continue
             if not any(np.allclose(x, r, atol=tol) for r in roots):
-                roots.append(x)
+                roots.append(list(x))
                 found = True
                 break
         if not found or len(roots) == root_count:

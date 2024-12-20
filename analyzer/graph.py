@@ -11,8 +11,8 @@ def graph(f, vars_count, min=-1, max=1, n=1000):
         return None
     points = generate_points(vars_count, max, min, n)
     
-    return [{"point": point, "value": f(point)} for point in points]
-    # return [Point(point, f(point)) for point in points]
+    # [[x, y, z], ///]
+    return [point + [f(point)] for point in points]
 
     
 
@@ -28,5 +28,4 @@ def generate_points(vars_count, min=-1, max=1, n=1000):
     if vars_count == 2:
         # [[1, 2], [2, 3], 3, 4, 5, 6]
         return [[x, y] for x in arg_values for y in arg_values]
-    
     

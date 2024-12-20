@@ -1,9 +1,12 @@
 from .solve import solve
 from .graph import graph
 def analyze(f, vars):
+    print(f, vars)
+    if (len(vars) == 0):
+        return [], []
     roots = solve(f, vars)
     points = graph(f, len(vars), -10, 10, 100)
-    # print(points)
+    print(points)
     return roots, points
 
 
