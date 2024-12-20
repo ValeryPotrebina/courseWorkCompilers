@@ -1,3 +1,12 @@
+
+import math
+
+
+CONSTANTS = {
+    'pi': math.pi,
+    'e': math.e
+}
+
 class Node():
     def __hash__(self):
         raise NotImplementedError("Subclasses should implement this!")
@@ -88,4 +97,19 @@ class UnaryOpNode(Node):
     def __eq__(self, other):
         if isinstance(other, UnaryOpNode):
             return self.operator == other.operator and self.operand == other.operand
+        return False
+    
+
+class ConstantNode(Node):
+    def __init__(self, name):
+        self.name = name    
+
+    def __repr__(self):
+        return f"ConstantNode({self.name})"
+    def __hash__(self):
+        return hash((self.name))
+
+    def __eq__(self, other):
+        if isinstance(other, ConstantNode):
+            return self.name == other.name
         return False

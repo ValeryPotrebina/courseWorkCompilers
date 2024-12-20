@@ -1,4 +1,4 @@
-from model import BinaryOpNode, FunctionNode, NumberNode, VariableNode, UnaryOpNode
+from model import BinaryOpNode, FunctionNode, NumberNode, VariableNode, UnaryOpNode, ConstantNode, CONSTANTS
 from .utils import getOperands, packOperands, getLeftOperands, addKeyFunc, multKeyFunc
 import math
 
@@ -40,7 +40,7 @@ def normalizeSum(node):
                     remainder -= op.operand
                 if (op.operator == "+"):
                     remainder += op.operand
-            if isinstance(op, VariableNode):
+            if isinstance(op, VariableNode) or isinstance(op, ConstantNode):
                 if (not op in vars):
                     vars[op] = 0
                 vars[op] += 1
@@ -115,7 +115,7 @@ def normalizeMult(node):
             if (isinstance(op, NumberNode)):
                 coeff *= op.value
                 continue
-            if (isinstance(op, VariableNode) or isinstance(op, FunctionNode)):
+            if (isinstance(op, VariableNode) or isinstance(op, FunctionNode) or isinstance(op, ConstantNode)):
                 if not op in vars:
                     vars[op] = []
                 vars[op] += [NumberNode(1)]

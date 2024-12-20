@@ -1,4 +1,4 @@
-from model import BinaryOpNode, FunctionNode, NumberNode, VariableNode, UnaryOpNode
+from model import BinaryOpNode, FunctionNode, NumberNode, VariableNode, UnaryOpNode, ConstantNode
 
 
 # TODO getOperands - получаем массив всех операндов математического выражения
@@ -25,22 +25,24 @@ def addKeyFunc(operand):
     return (
         -getDegree(operand),
         -max([getDegree(op) for op in getOperands(operand, "*")]),
+        not isinstance(operand, NumberNode),
     )
 
-def multKeyFunc(operands):
+def multKeyFunc(operand):
     # [False True]
     def getName(x):
-        if isinstance(operands, VariableNode) or isinstance(operands, FunctionNode):
+        if isinstance(operand, VariableNode) or isinstance(operand, FunctionNode):
             return x.name
         return ''
     return (
-        not isinstance(operands, VariableNode),
-        not isinstance(operands, FunctionNode),
-        not isinstance(operands, BinaryOpNode),
-        getName(operands),
+        not isinstance(operand, ConstantNode),
+        not isinstance(operand, VariableNode),
+        not isinstance(operand, FunctionNode),
+        not isinstance(operand, BinaryOpNode),
+        getName(operand),
     )
 
-def  getDegree(op):
+def getDegree(op):
     if (isinstance(op, VariableNode)):
         return 1
     if (isinstance(op, BinaryOpNode)):
@@ -58,6 +60,15 @@ def  getDegree(op):
     return 0
 
 
-
-
-
+def colectVariables(node):
+    if isinstance(node, NumberNode):
+        return []
+    if isinstance(node, VariableNode):
+        return [node.name]
+    if isinstance(node, FunctionNode):
+        return colectVariables(node.arg)
+    if isinstance(node, BinaryOpNode):
+        return list(set(colectVariables(node.left) + colectVariables(node.right)))
+    if isinstance(node, UnaryOpNode):
+        return colectVariables(node.operand)
+    return []

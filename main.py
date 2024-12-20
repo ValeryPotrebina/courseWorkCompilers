@@ -1,6 +1,7 @@
+import traceback
 from parser import parse
 from simplify import simplify
-from converter import convert, generate_random_numbers
+from converter import convert
 from utils import print_tree, prettify
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -16,31 +17,34 @@ def solve():
     expression = data.get('expression')
     try:
         result = parse(expression)
-        result = simplify(result)
+        f_letter, result = simplify(result)
         print_tree(result)
         res = prettify(result)
         print("res", res)
     
         vars, f = convert(result)
-        # print("vars", vars)
-        # print("f", f)
+        print("vars", vars)
+        print("f", f)
 
         roots, points = analyze(f, vars)
 
-        print("roots", roots)
+        # print("roots", roots)
         # print("points", points)
         # roots = [root.tolist() if isinstance(root, np.ndarray) else root for root in roots]
         # points = [point.tolist() if isinstance(point, np.ndarray) else point for point in points]
 
-        # print("roots: ", roots)
-        # print("points: ", points)
+        print("roots: ", roots)
+        print("points: ", points)
         return jsonify({
+            'f_letter': f_letter,
+            'vars' : vars,
             'result': str(res),
             'roots': roots,
             'points': points
 
                         })
     except Exception as e:
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 400
     
 # TESTS

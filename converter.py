@@ -1,15 +1,7 @@
 import math
-import random
-from model import BinaryOpNode, FunctionNode, NumberNode, VariableNode, UnaryOpNode
-
-
-def generate_random_numbers(num_variables, min_value=1, max_value=3):
-    return [random.randint(min_value, max_value) for _ in range(num_variables)]
-
+from model import BinaryOpNode, FunctionNode, NumberNode, VariableNode, UnaryOpNode, ConstantNode, CONSTANTS
 
 def colectVariables(node):
-    if isinstance(node, NumberNode):
-        return []
     if isinstance(node, VariableNode):
         return [node.name]
     if isinstance(node, FunctionNode):
@@ -28,6 +20,8 @@ def convert(node):
 def convertNode(node, vars):
     if isinstance(node, NumberNode):
         return lambda args: node.value
+    if isinstance(node, ConstantNode):
+        return lambda args: CONSTANTS[node.name]
     if isinstance(node, VariableNode):
         return lambda args: args[vars.index(node.name)]
     if isinstance(node, BinaryOpNode):
@@ -40,7 +34,7 @@ def convertNode(node, vars):
         if node.operator == '/':
             return lambda args: convertNode(node.left, vars)(args) / convertNode(node.right, vars)(args)
         if node.operator == '^':
-            return lambda args: convertNode(node.left, vars)(args) ** convertNode(node.right, vars)(args)
+            return lambda args: math.pow(convertNode(node.left, vars)(args), convertNode(node.right, vars)(args))
     if isinstance(node, UnaryOpNode):
         if node.operator == '-':
             return lambda args: -convertNode(node.operand, vars)(args)

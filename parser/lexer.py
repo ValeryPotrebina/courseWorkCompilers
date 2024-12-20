@@ -39,7 +39,7 @@ def t_NUMBER(t):
 def t_FUNCTION(t):
     return t
 
-@TOKEN(r'[a-zA-Z](_[0-9]+)?')
+@TOKEN(r'(pi)|[a-zA-Z](_[0-9]+)?')
 def t_VAR(t):
     return t
 

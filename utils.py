@@ -1,9 +1,11 @@
-from model import BinaryOpNode, FunctionNode, NumberNode, VariableNode, UnaryOpNode
+from model import BinaryOpNode, FunctionNode, NumberNode, VariableNode, UnaryOpNode, ConstantNode
 
 def print_tree(node, level=0):
     indent = "  " * level
     if isinstance(node, NumberNode):
         print(f"{indent}NumberNode({node.value})")
+    elif isinstance(node, ConstantNode):
+        print(f"{indent}ConstantNode({node.name})")
     elif isinstance(node, VariableNode):
         print(f"{indent}VariableNode({node.name})")
     elif isinstance(node, FunctionNode):
@@ -21,7 +23,7 @@ def print_tree(node, level=0):
 def prettify(node):
     if isinstance(node, NumberNode):
         return f"{node.value}"
-    if isinstance(node, VariableNode):
+    if isinstance(node, VariableNode) or isinstance(node, ConstantNode):
         return f"{node.name}"
     if isinstance(node, FunctionNode):
         return f"{node.name}({prettify(node.arg)})"
@@ -32,7 +34,7 @@ def prettify(node):
         right = prettify(node.right)
         if isinstance(node.right, BinaryOpNode) and node.operator in ["+", "-"] and node.right.operator == node.operator:
             right = right[1:-1]
-        return f"({left} {node.operator} {right})"
+        return f"{left} {node.operator} {right}"
     if isinstance(node, UnaryOpNode):
         return f"({node.operator}{prettify(node.operand)})"
 
