@@ -37,20 +37,6 @@ function setLoading(value) {
 }
 
 async function solveMath(expression) {
-    // console.log(e)
-    // e.preventDefault();
-    // TODO: 3 * x / x
-    // TODO:ПОЧЕМУ ТО НЕ СЧИТАЕТСЯ КОРЕНЬ X = 0 
-    // TODO: x + y + z + 4*z
-    // cкладывать числа
-    // graph генерировать точки и для более 2х переменных
-
-
-    // Проверка на пустое поле ввода
-
-
-    // Отправка данных на бэкенд
-
     const controller = new AbortController();
 
     document.onkeydown = (event) => {
@@ -79,16 +65,8 @@ async function solveMath(expression) {
         const latexResult = convertToLatex(f_letter + ' = ' + data.result);
         resultDiv.innerHTML = `<strong>Result:</strong> $$${latexResult}$$`;
 
-        // roots.innerText = `${JSON.stringify(data.roots)}`;
-        // points.innerText = `Points: ${JSON.stringify(data.points)}`;
-
         rootsList.innerHTML = '';
-        // if (data.roots.length === 0) {
-        //     const li = document.createElement('li');
-        //     li.innerText = 'No roots found';
-        //     rootsList.appendChild(li);
-        // }
-        // ????????????????????
+
         data.roots.forEach(root => {
             const roundedRoot = root.map(value => roundRoot(value));
             const li = document.createElement('li');
@@ -104,10 +82,7 @@ async function solveMath(expression) {
 }
 
 function convertToLatex(expression) {
-    // expression = expression.replace(/^\((.*)\)$/, '$1'); // удаляем скобки по бокам
-    // expression = expression.replace(/\(([^\s]+)\)/g, '$1');
     expression = expression.replace(/([0-9]+)\.0/g, '$1');
-    // expression = expression.replace(/\(([^\+\-]+)\)/g, '$1');
     expression = expression.replace(/\*/g, '');
     return expression;
 }
@@ -119,13 +94,31 @@ function plotGraph(points, roots, f_letter, vars) {
     f_letter = f_letter ? f_letter : vars[0]
 
     const graph = document.getElementById('graph');
-    const dimension = 1 +  vars?.length ?? 0;
-    console.log(dimension, vars)
+    const dimension = 1 + vars?.length ?? 0;
 
     const axis = Array.from(Array(dimension).keys()).map(i => points.map(point => point[i]))
 
 
-    if (dimension == 2) {
+    if (dimension == 1) {
+        const axis = Array.from(Array(dimension + 1).keys()).map(i => points.map(point => point[i]))
+        console.log("axis", axis)
+        
+        const trace = {
+            x: axis[1],
+            y: axis[0],
+            mode: 'lines',
+            type: 'scatter',
+            marker: { color: 'red' }
+        };
+        const layout = {
+            title: '2D Graph',
+            xaxis: { title: f_letter },
+            yaxis: { title: "f(" + f_letter +")"}
+        };
+        
+
+        Plotly.newPlot(graph, [trace], layout);
+    } else if (dimension == 2) {
         const trace = {
             x: axis[0],
             y: axis[1],
@@ -145,11 +138,12 @@ function plotGraph(points, roots, f_letter, vars) {
 
         const layout = {
             title: '2D Graph',
-            xaxis: { title: 'X' },
+            xaxis: { title: vars[0] },
             yaxis: { title: 'Y' }
         };
 
         Plotly.newPlot(graph, [trace, rootTrace], layout);
+
     } else if (dimension === 3) {
         const trace = {
             x: axis[0],
@@ -158,7 +152,12 @@ function plotGraph(points, roots, f_letter, vars) {
             mode: 'markers',
             type: 'scatter3d',
             name: 'Function',
-            marker: { size: 3 }
+            marker: {
+                size: 3,
+                color: axis[2], 
+                colorscale: 'Jet', 
+                showscale: true 
+            }
         };
         const layout = {
             title: '3D Graph',

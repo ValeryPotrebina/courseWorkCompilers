@@ -29,12 +29,26 @@ def prettify(node):
         return f"{node.name}({prettify(node.arg)})"
     if isinstance(node, BinaryOpNode):
         left = prettify(node.left)
-        if isinstance(node.left, BinaryOpNode) and node.operator in ["+", "-", "*", "/", "^"] and node.left.operator == node.operator:
-            left = left[1:-1]
         right = prettify(node.right)
-        if isinstance(node.right, BinaryOpNode) and node.operator in ["+", "-"] and node.right.operator == node.operator:
-            right = right[1:-1]
+
+        # Определяем приоритеты операторов
+        operator_precedence = {
+            '=': 0,  # Оператор присваивания имеет самый низкий приоритет
+            '+': 1,
+            '-': 1,
+            '*': 2,
+            '/': 2,
+            '^': 3
+        }
+
+        # Проверяем приоритеты и удаляем лишние скобки
+        if isinstance(node.left, BinaryOpNode) and node.operator in operator_precedence and node.left.operator in operator_precedence:
+            if operator_precedence[node.operator] > operator_precedence[node.left.operator]:
+                left = f"({left})"
+        if isinstance(node.right, BinaryOpNode) and node.operator in operator_precedence and node.right.operator in operator_precedence:
+            if operator_precedence[node.operator] > operator_precedence[node.right.operator]:
+                right = f"({right})"
+
         return f"{left} {node.operator} {right}"
     if isinstance(node, UnaryOpNode):
-        return f"({node.operator}{prettify(node.operand)})"
-
+        return f"{node.operator}{prettify(node.operand)}"

@@ -51,10 +51,6 @@ button:hover {
     color: #333;
 }
 
-.graph {
-    max-width: 450px;
-    height: 100%; /* Увеличиваем высоту графика */
-}
 
 .roots {
     margin: 20px 0;
@@ -114,4 +110,7 @@ button:hover {
     display: none;
   }
 
-  
+  #graph {
+    width: 800px; /* Увеличьте ширину */
+    height: 600px; /* Увеличьте высоту */
+}

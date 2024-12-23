@@ -5,14 +5,12 @@ import math
 def normalize(node):
     if (isinstance(node, BinaryOpNode)):
         if (node.operator == "+"):
-            # print("aa")
             return normalizeSum(node)
         if (node.operator == "-"):
             return normalizeMinus(node)
         if (node.operator == "*"):
             return normalizeMult(node)
         if (node.operator == "/"):
-            # print("cccccc")
             return normalizeDivision(node)
         if (node.operator == "^"):
             return normalizePow(node)
@@ -26,11 +24,9 @@ def normalize(node):
 
 def normalizeSum(node):
     if (isinstance(node, BinaryOpNode) and node.operator == "+"):
-        # vars = {key: node, value: [coeff1, coeff2, ...]}
         vars = {}
         remainder = 0
         operands = [normalize(op) for op in getOperands(node, "+")]
-        # print("operands (sum): ", operands)
         for op in operands:
             if isinstance(op, NumberNode):
                 remainder += op.value
@@ -47,27 +43,17 @@ def normalizeSum(node):
                 continue
             if (isinstance(op, BinaryOpNode) and op.operator == "*"):
                 termOperands = getOperands(op, "*")
-                # print("termOperands: ", termOperands)
                 coeff = termOperands[0] if isinstance(termOperands[0], NumberNode) else NumberNode(1)
-                # termOperand = [2, x, y]
-                # ((2 * x) * y) -> 2 * (x * y)
                 monomial = termOperands[1:] if isinstance(termOperands[0], NumberNode) else termOperands
                 monomial = packOperands(monomial, "*")
-                # print("monomial: ", monomial)
                 if (not monomial in vars):
                     vars[monomial] = 0
                 vars[monomial] += coeff.value
                 continue
-
             monomial = op
-            print("monomial??: ", monomial)
             if (not monomial in vars):
                 vars[monomial] = 0
-                # TODO: ПРОВЕРИТЬ
             vars[monomial] += 1
-        # key - Node, value = coeff
-        # return summ coeff * key
-
         vars = [
             normalize(BinaryOpNode(
                 NumberNode(vars[monomial]),
@@ -76,12 +62,9 @@ def normalizeSum(node):
             ))
             for monomial in sorted(list(vars.keys()), key=addKeyFunc)
         ]
-        # print("vars (sum): ", vars)
-
         remainder = [] if remainder == 0 else [NumberNode(remainder)]
         operands = vars + remainder
         return packOperands(operands, "+") if len(operands) > 0 else NumberNode(0)
-
     return node
 
 def normalizeMinus(node):
@@ -125,35 +108,22 @@ def normalizeMult(node):
                     vars[op.left] = []
                 vars[op.left] += [op.right]
                 continue
-            # TODO: добавить деление 
             others.append(op)
-
         if (coeff == 0):
             return NumberNode(0)
-
-# vars {key: node, value: [coeff1, coeff2, ...]}
         for var in vars:
-            # sumDegree ->
-            # для каждого ключа vars запакуем массив со степенями (сложим) и нормализуем, тем самым посчитав степени
             vars[var] = normalize(packOperands(vars[var], "+"))
-            
         vars = [normalize(BinaryOpNode(var, "^", vars[var]))
                 for var in sorted(list(vars.keys()), key=multKeyFunc)]  # x^ 3
-        # print("VARS ", vars)
-
         coeff = [] if coeff == 1 else [NumberNode(coeff)]
         operands = coeff + vars + others
-        # print("operands (mult): ", operands)
         return packOperands(operands, "*")
     return node
 
 def normalizeDivision(node):
-    # print("BBBBBBB")
     if isinstance(node, BinaryOpNode) and node.operator == "/":
         left = normalize(node.left)
-        # print("left: ", left)
         right = normalize(node.right)
-        # print("right: ", right)
         # (x + 1) / (x + 1) = 1
         if (left == right):
             return NumberNode(1)
@@ -175,34 +145,22 @@ def normalizePow(node):
     # TODO: ДОДЕЛАТЬ
     if (isinstance(node, BinaryOpNode) and node.operator == "^"):
         operands = [normalize(op) for op in getLeftOperands(node, "^")]
-
         base = operands[0]
         degree = normalize(packOperands(operands[1:], "*"))
-
         if (isinstance(base, NumberNode)):
             if (isinstance(degree, BinaryOpNode) and (degree.operator == "*")):
-                # 2^3^(x*sinx) -> 8^(x*sinx)
                 degreeOps = getOperands(degree, "*")
-
-                degreeCoeff = degreeOps[0] if isinstance(
-                    degreeOps[0], NumberNode) else NumberNode(1)
+                degreeCoeff = degreeOps[0] if isinstance(degreeOps[0], NumberNode) else NumberNode(1)
                 degreeOps = degreeOps[1:] if isinstance(
                     degreeOps[0], NumberNode) else degreeOps
-
                 degree = packOperands(degreeOps, "*")
                 base = NumberNode(pow(base.value, degreeCoeff.value))
             if (isinstance(degree, NumberNode)):
                 return NumberNode(pow(base.value, degree.value))
-            # if (isinstance(degree, BinaryOpNode) and (degree.operator == "+")):
-            #     # 2^(2+xy) -> 2^2 * 2^x
-            #     degreeOps = getOperands(degree, "+")
-            # 1^any = 1
             if (base.value == 1):
                 return NumberNode(1)
-            # 0^any = 0
             if (base.value == 0):
                 return NumberNode(0)
-
         if (isinstance(degree, NumberNode)):
             if (degree.value == 0):
                 return NumberNode(1)
