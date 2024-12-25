@@ -2,11 +2,6 @@ from math import isnan
 from matplotlib import pyplot as plt
 import numpy as np
 
-# class Point:
-#     def __init__(self, point, value):
-#         self.point = point
-#         self.value = value
-
 def graph(f, vars_count, min=-1, max=1, n=1000):
     if vars_count == 0:
         return private_solution(f, min, max, n)
@@ -19,12 +14,9 @@ def graph(f, vars_count, min=-1, max=1, n=1000):
 
 
 def private_solution(f, min=-1, max=1, n=1000):
-    # Извлекаем значение x из функции f
     arg_values = np.linspace(min, max, n)
     x_value = [[f(x)] for x in arg_values]
-    # Генерируем значения y от min до max
     y_values = [[y] for y in arg_values]
-    # Создаем массив точек, где x всегда равен x_value
     points = [[x_value, y_values]]
     return points
 

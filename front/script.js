@@ -55,6 +55,10 @@ async function solveMath(expression) {
 
     })
 
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);  
+    }
+
     const data = await response.json();
 
     if (data.error) {
@@ -62,7 +66,7 @@ async function solveMath(expression) {
     } else {
 
         const f_letter = data.f_letter ? data.f_letter :  `f(${data.vars.join(', ')})`
-        const latexResult = convertToLatex(f_letter + ' = ' + data.result);
+        const latexResult = f_letter + ' = ' + data.result;
         resultDiv.innerHTML = `<strong>Result:</strong> $$${latexResult}$$`;
 
         rootsList.innerHTML = '';
@@ -81,11 +85,6 @@ async function solveMath(expression) {
 
 }
 
-function convertToLatex(expression) {
-    expression = expression.replace(/([0-9]+)\.0/g, '$1');
-    expression = expression.replace(/\*/g, '');
-    return expression;
-}
 function roundRoot(value, eps = 1e-5) {
     return Math.abs(value - Math.round(value)) < eps ? Math.round(value) : value
 }
@@ -94,13 +93,12 @@ function plotGraph(points, roots, f_letter, vars) {
     f_letter = f_letter ? f_letter : vars[0]
 
     const graph = document.getElementById('graph');
-    const dimension = 1 + vars?.length ?? 0;
-
-    const axis = Array.from(Array(dimension).keys()).map(i => points.map(point => point[i]))
-
+    const dimension = (vars?.length ?? 0) + 1;
+    
+    console.log(dimension)
 
     if (dimension == 1) {
-        const axis = Array.from(Array(dimension + 1).keys()).map(i => points.map(point => point[i]))
+        const axis = getAxis(points, 2)
         console.log("axis", axis)
         
         const trace = {
@@ -119,6 +117,7 @@ function plotGraph(points, roots, f_letter, vars) {
 
         Plotly.newPlot(graph, [trace], layout);
     } else if (dimension == 2) {
+        const axis = getAxis(points, 2)
         const trace = {
             x: axis[0],
             y: axis[1],
@@ -145,6 +144,7 @@ function plotGraph(points, roots, f_letter, vars) {
         Plotly.newPlot(graph, [trace, rootTrace], layout);
 
     } else if (dimension === 3) {
+        const axis = getAxis(points, 3)
         const trace = {
             x: axis[0],
             y: axis[1],
@@ -175,4 +175,8 @@ function plotGraph(points, roots, f_letter, vars) {
 
 
 
+}
+
+function getAxis(points, dimension){
+    return Array.from(Array(dimension).keys()).map(i => points.map(point => point[i]))
 }

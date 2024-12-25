@@ -11,7 +11,7 @@ def define_constant(node):
     if isinstance(node, BinaryOpNode):
         return BinaryOpNode(define_constant(node.left), node.operator, define_constant(node.right))
     if isinstance(node, UnaryOpNode):
-        return UnaryOpNode(define_constant(node.operand))
+        return UnaryOpNode(node.operator, define_constant(node.operand))
     return node
 
 

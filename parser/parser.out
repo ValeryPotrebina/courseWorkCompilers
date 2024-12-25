@@ -2,601 +2,1078 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Grammar
 
-Rule 0     S' -> expression
-Rule 1     expression -> expression COMPARE expression
-Rule 2     expression -> expression PLUS expression
-Rule 3     expression -> expression MINUS expression
-Rule 4     expression -> expression MULT expression
-Rule 5     expression -> expression DIV expression
-Rule 6     expression -> expression POW expression
-Rule 7     expression -> LPAREN expression RPAREN
-Rule 8     expression -> VAR
-Rule 9     expression -> NUMBER
-Rule 10    expression -> MINUS expression
-Rule 11    expression -> FUNCTION LPAREN expression RPAREN
-Rule 12    expression -> FUNCTION VAR
+Rule 0     S' -> Expr
+Rule 1     Expr -> CompareExpr
+Rule 2     CompareExpr -> AddExpr COMPARE AddExpr
+Rule 3     CompareExpr -> AddExpr
+Rule 4     AddExpr -> AddExpr PLUS MulExpr
+Rule 5     AddExpr -> AddExpr MINUS MulExpr
+Rule 6     AddExpr -> MulExpr
+Rule 7     MulExpr -> MulExpr MULT PowExpr
+Rule 8     MulExpr -> MulExpr DIV PowExpr
+Rule 9     MulExpr -> MulExpr PowExpr2
+Rule 10    MulExpr -> PowExpr
+Rule 11    PowExpr -> UnaryExpr POW PowExpr
+Rule 12    PowExpr -> UnaryExpr
+Rule 13    PowExpr2 -> Primary POW PowExpr
+Rule 14    PowExpr2 -> Primary
+Rule 15    UnaryExpr -> PLUS UnaryExpr
+Rule 16    UnaryExpr -> MINUS UnaryExpr
+Rule 17    UnaryExpr -> Primary
+Rule 18    Primary -> Number
+Rule 19    Primary -> Variable
+Rule 20    Primary -> Function
+Rule 21    Primary -> Group
+Rule 22    Number -> NUMBER
+Rule 23    Variable -> VAR
+Rule 24    Function -> FUNCTION LPAREN AddExpr RPAREN
+Rule 25    Function -> FUNCTION Variable
+Rule 26    Function -> FUNCTION Number
+Rule 27    Group -> LPAREN AddExpr RPAREN
 
 Terminals, with rules where they appear
 
-COMPARE              : 1
-DIV                  : 5
-FUNCTION             : 11 12
-LPAREN               : 7 11
-MINUS                : 3 10
-MULT                 : 4
-NUMBER               : 9
-PLUS                 : 2
-POW                  : 6
-RPAREN               : 7 11
-VAR                  : 8 12
+COMPARE              : 2
+DIV                  : 8
+FUNCTION             : 24 25 26
+LPAREN               : 24 27
+MINUS                : 5 16
+MULT                 : 7
+NUMBER               : 22
+PLUS                 : 4 15
+POW                  : 11 13
+RPAREN               : 24 27
+VAR                  : 23
 error                : 
 
 Nonterminals, with rules where they appear
 
-expression           : 1 1 2 2 3 3 4 4 5 5 6 6 7 10 11 0
+AddExpr              : 2 2 3 4 5 24 27
+CompareExpr          : 1
+Expr                 : 0
+Function             : 20
+Group                : 21
+MulExpr              : 4 5 6 7 8 9
+Number               : 18 26
+PowExpr              : 7 8 10 11 13
+PowExpr2             : 9
+Primary              : 13 14 17
+UnaryExpr            : 11 12 15 16
+Variable             : 19 25
 
 Parsing method: LALR
 
 state 0
 
-    (0) S' -> . expression
-    (1) expression -> . expression COMPARE expression
-    (2) expression -> . expression PLUS expression
-    (3) expression -> . expression MINUS expression
-    (4) expression -> . expression MULT expression
-    (5) expression -> . expression DIV expression
-    (6) expression -> . expression POW expression
-    (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . VAR
-    (9) expression -> . NUMBER
-    (10) expression -> . MINUS expression
-    (11) expression -> . FUNCTION LPAREN expression RPAREN
-    (12) expression -> . FUNCTION VAR
+    (0) S' -> . Expr
+    (1) Expr -> . CompareExpr
+    (2) CompareExpr -> . AddExpr COMPARE AddExpr
+    (3) CompareExpr -> . AddExpr
+    (4) AddExpr -> . AddExpr PLUS MulExpr
+    (5) AddExpr -> . AddExpr MINUS MulExpr
+    (6) AddExpr -> . MulExpr
+    (7) MulExpr -> . MulExpr MULT PowExpr
+    (8) MulExpr -> . MulExpr DIV PowExpr
+    (9) MulExpr -> . MulExpr PowExpr2
+    (10) MulExpr -> . PowExpr
+    (11) PowExpr -> . UnaryExpr POW PowExpr
+    (12) PowExpr -> . UnaryExpr
+    (15) UnaryExpr -> . PLUS UnaryExpr
+    (16) UnaryExpr -> . MINUS UnaryExpr
+    (17) UnaryExpr -> . Primary
+    (18) Primary -> . Number
+    (19) Primary -> . Variable
+    (20) Primary -> . Function
+    (21) Primary -> . Group
+    (22) Number -> . NUMBER
+    (23) Variable -> . VAR
+    (24) Function -> . FUNCTION LPAREN AddExpr RPAREN
+    (25) Function -> . FUNCTION Variable
+    (26) Function -> . FUNCTION Number
+    (27) Group -> . LPAREN AddExpr RPAREN
 
-    LPAREN          shift and go to state 3
-    VAR             shift and go to state 4
-    NUMBER          shift and go to state 5
-    MINUS           shift and go to state 2
-    FUNCTION        shift and go to state 6
+    PLUS            shift and go to state 4
+    MINUS           shift and go to state 6
+    NUMBER          shift and go to state 14
+    VAR             shift and go to state 15
+    FUNCTION        shift and go to state 16
+    LPAREN          shift and go to state 17
 
-    expression                     shift and go to state 1
+    Expr                           shift and go to state 1
+    CompareExpr                    shift and go to state 2
+    AddExpr                        shift and go to state 3
+    MulExpr                        shift and go to state 5
+    PowExpr                        shift and go to state 7
+    UnaryExpr                      shift and go to state 8
+    Primary                        shift and go to state 9
+    Number                         shift and go to state 10
+    Variable                       shift and go to state 11
+    Function                       shift and go to state 12
+    Group                          shift and go to state 13
 
 state 1
 
-    (0) S' -> expression .
-    (1) expression -> expression . COMPARE expression
-    (2) expression -> expression . PLUS expression
-    (3) expression -> expression . MINUS expression
-    (4) expression -> expression . MULT expression
-    (5) expression -> expression . DIV expression
-    (6) expression -> expression . POW expression
+    (0) S' -> Expr .
 
-    COMPARE         shift and go to state 7
-    PLUS            shift and go to state 8
-    MINUS           shift and go to state 9
-    MULT            shift and go to state 10
-    DIV             shift and go to state 11
-    POW             shift and go to state 12
 
 
 state 2
 
-    (10) expression -> MINUS . expression
-    (1) expression -> . expression COMPARE expression
-    (2) expression -> . expression PLUS expression
-    (3) expression -> . expression MINUS expression
-    (4) expression -> . expression MULT expression
-    (5) expression -> . expression DIV expression
-    (6) expression -> . expression POW expression
-    (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . VAR
-    (9) expression -> . NUMBER
-    (10) expression -> . MINUS expression
-    (11) expression -> . FUNCTION LPAREN expression RPAREN
-    (12) expression -> . FUNCTION VAR
+    (1) Expr -> CompareExpr .
 
-    LPAREN          shift and go to state 3
-    VAR             shift and go to state 4
-    NUMBER          shift and go to state 5
-    MINUS           shift and go to state 2
-    FUNCTION        shift and go to state 6
+    $end            reduce using rule 1 (Expr -> CompareExpr .)
 
-    expression                     shift and go to state 13
 
 state 3
 
-    (7) expression -> LPAREN . expression RPAREN
-    (1) expression -> . expression COMPARE expression
-    (2) expression -> . expression PLUS expression
-    (3) expression -> . expression MINUS expression
-    (4) expression -> . expression MULT expression
-    (5) expression -> . expression DIV expression
-    (6) expression -> . expression POW expression
-    (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . VAR
-    (9) expression -> . NUMBER
-    (10) expression -> . MINUS expression
-    (11) expression -> . FUNCTION LPAREN expression RPAREN
-    (12) expression -> . FUNCTION VAR
+    (2) CompareExpr -> AddExpr . COMPARE AddExpr
+    (3) CompareExpr -> AddExpr .
+    (4) AddExpr -> AddExpr . PLUS MulExpr
+    (5) AddExpr -> AddExpr . MINUS MulExpr
 
-    LPAREN          shift and go to state 3
-    VAR             shift and go to state 4
-    NUMBER          shift and go to state 5
-    MINUS           shift and go to state 2
-    FUNCTION        shift and go to state 6
+    COMPARE         shift and go to state 18
+    $end            reduce using rule 3 (CompareExpr -> AddExpr .)
+    PLUS            shift and go to state 19
+    MINUS           shift and go to state 20
 
-    expression                     shift and go to state 14
 
 state 4
 
-    (8) expression -> VAR .
+    (15) UnaryExpr -> PLUS . UnaryExpr
+    (15) UnaryExpr -> . PLUS UnaryExpr
+    (16) UnaryExpr -> . MINUS UnaryExpr
+    (17) UnaryExpr -> . Primary
+    (18) Primary -> . Number
+    (19) Primary -> . Variable
+    (20) Primary -> . Function
+    (21) Primary -> . Group
+    (22) Number -> . NUMBER
+    (23) Variable -> . VAR
+    (24) Function -> . FUNCTION LPAREN AddExpr RPAREN
+    (25) Function -> . FUNCTION Variable
+    (26) Function -> . FUNCTION Number
+    (27) Group -> . LPAREN AddExpr RPAREN
 
-    COMPARE         reduce using rule 8 (expression -> VAR .)
-    PLUS            reduce using rule 8 (expression -> VAR .)
-    MINUS           reduce using rule 8 (expression -> VAR .)
-    MULT            reduce using rule 8 (expression -> VAR .)
-    DIV             reduce using rule 8 (expression -> VAR .)
-    POW             reduce using rule 8 (expression -> VAR .)
-    $end            reduce using rule 8 (expression -> VAR .)
-    RPAREN          reduce using rule 8 (expression -> VAR .)
+    PLUS            shift and go to state 4
+    MINUS           shift and go to state 6
+    NUMBER          shift and go to state 14
+    VAR             shift and go to state 15
+    FUNCTION        shift and go to state 16
+    LPAREN          shift and go to state 17
 
+    UnaryExpr                      shift and go to state 21
+    Primary                        shift and go to state 9
+    Number                         shift and go to state 10
+    Variable                       shift and go to state 11
+    Function                       shift and go to state 12
+    Group                          shift and go to state 13
 
 state 5
 
-    (9) expression -> NUMBER .
+    (6) AddExpr -> MulExpr .
+    (7) MulExpr -> MulExpr . MULT PowExpr
+    (8) MulExpr -> MulExpr . DIV PowExpr
+    (9) MulExpr -> MulExpr . PowExpr2
+    (13) PowExpr2 -> . Primary POW PowExpr
+    (14) PowExpr2 -> . Primary
+    (18) Primary -> . Number
+    (19) Primary -> . Variable
+    (20) Primary -> . Function
+    (21) Primary -> . Group
+    (22) Number -> . NUMBER
+    (23) Variable -> . VAR
+    (24) Function -> . FUNCTION LPAREN AddExpr RPAREN
+    (25) Function -> . FUNCTION Variable
+    (26) Function -> . FUNCTION Number
+    (27) Group -> . LPAREN AddExpr RPAREN
 
-    COMPARE         reduce using rule 9 (expression -> NUMBER .)
-    PLUS            reduce using rule 9 (expression -> NUMBER .)
-    MINUS           reduce using rule 9 (expression -> NUMBER .)
-    MULT            reduce using rule 9 (expression -> NUMBER .)
-    DIV             reduce using rule 9 (expression -> NUMBER .)
-    POW             reduce using rule 9 (expression -> NUMBER .)
-    $end            reduce using rule 9 (expression -> NUMBER .)
-    RPAREN          reduce using rule 9 (expression -> NUMBER .)
+    COMPARE         reduce using rule 6 (AddExpr -> MulExpr .)
+    PLUS            reduce using rule 6 (AddExpr -> MulExpr .)
+    MINUS           reduce using rule 6 (AddExpr -> MulExpr .)
+    $end            reduce using rule 6 (AddExpr -> MulExpr .)
+    RPAREN          reduce using rule 6 (AddExpr -> MulExpr .)
+    MULT            shift and go to state 22
+    DIV             shift and go to state 23
+    NUMBER          shift and go to state 14
+    VAR             shift and go to state 15
+    FUNCTION        shift and go to state 16
+    LPAREN          shift and go to state 17
 
+    PowExpr2                       shift and go to state 24
+    Primary                        shift and go to state 25
+    Number                         shift and go to state 10
+    Variable                       shift and go to state 11
+    Function                       shift and go to state 12
+    Group                          shift and go to state 13
 
 state 6
 
-    (11) expression -> FUNCTION . LPAREN expression RPAREN
-    (12) expression -> FUNCTION . VAR
+    (16) UnaryExpr -> MINUS . UnaryExpr
+    (15) UnaryExpr -> . PLUS UnaryExpr
+    (16) UnaryExpr -> . MINUS UnaryExpr
+    (17) UnaryExpr -> . Primary
+    (18) Primary -> . Number
+    (19) Primary -> . Variable
+    (20) Primary -> . Function
+    (21) Primary -> . Group
+    (22) Number -> . NUMBER
+    (23) Variable -> . VAR
+    (24) Function -> . FUNCTION LPAREN AddExpr RPAREN
+    (25) Function -> . FUNCTION Variable
+    (26) Function -> . FUNCTION Number
+    (27) Group -> . LPAREN AddExpr RPAREN
 
-    LPAREN          shift and go to state 15
-    VAR             shift and go to state 16
+    PLUS            shift and go to state 4
+    MINUS           shift and go to state 6
+    NUMBER          shift and go to state 14
+    VAR             shift and go to state 15
+    FUNCTION        shift and go to state 16
+    LPAREN          shift and go to state 17
 
+    UnaryExpr                      shift and go to state 26
+    Primary                        shift and go to state 9
+    Number                         shift and go to state 10
+    Variable                       shift and go to state 11
+    Function                       shift and go to state 12
+    Group                          shift and go to state 13
 
 state 7
 
-    (1) expression -> expression COMPARE . expression
-    (1) expression -> . expression COMPARE expression
-    (2) expression -> . expression PLUS expression
-    (3) expression -> . expression MINUS expression
-    (4) expression -> . expression MULT expression
-    (5) expression -> . expression DIV expression
-    (6) expression -> . expression POW expression
-    (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . VAR
-    (9) expression -> . NUMBER
-    (10) expression -> . MINUS expression
-    (11) expression -> . FUNCTION LPAREN expression RPAREN
-    (12) expression -> . FUNCTION VAR
+    (10) MulExpr -> PowExpr .
 
-    LPAREN          shift and go to state 3
-    VAR             shift and go to state 4
-    NUMBER          shift and go to state 5
-    MINUS           shift and go to state 2
-    FUNCTION        shift and go to state 6
+    MULT            reduce using rule 10 (MulExpr -> PowExpr .)
+    DIV             reduce using rule 10 (MulExpr -> PowExpr .)
+    NUMBER          reduce using rule 10 (MulExpr -> PowExpr .)
+    VAR             reduce using rule 10 (MulExpr -> PowExpr .)
+    FUNCTION        reduce using rule 10 (MulExpr -> PowExpr .)
+    LPAREN          reduce using rule 10 (MulExpr -> PowExpr .)
+    COMPARE         reduce using rule 10 (MulExpr -> PowExpr .)
+    PLUS            reduce using rule 10 (MulExpr -> PowExpr .)
+    MINUS           reduce using rule 10 (MulExpr -> PowExpr .)
+    $end            reduce using rule 10 (MulExpr -> PowExpr .)
+    RPAREN          reduce using rule 10 (MulExpr -> PowExpr .)
 
-    expression                     shift and go to state 17
 
 state 8
 
-    (2) expression -> expression PLUS . expression
-    (1) expression -> . expression COMPARE expression
-    (2) expression -> . expression PLUS expression
-    (3) expression -> . expression MINUS expression
-    (4) expression -> . expression MULT expression
-    (5) expression -> . expression DIV expression
-    (6) expression -> . expression POW expression
-    (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . VAR
-    (9) expression -> . NUMBER
-    (10) expression -> . MINUS expression
-    (11) expression -> . FUNCTION LPAREN expression RPAREN
-    (12) expression -> . FUNCTION VAR
+    (11) PowExpr -> UnaryExpr . POW PowExpr
+    (12) PowExpr -> UnaryExpr .
 
-    LPAREN          shift and go to state 3
-    VAR             shift and go to state 4
-    NUMBER          shift and go to state 5
-    MINUS           shift and go to state 2
-    FUNCTION        shift and go to state 6
+    POW             shift and go to state 27
+    MULT            reduce using rule 12 (PowExpr -> UnaryExpr .)
+    DIV             reduce using rule 12 (PowExpr -> UnaryExpr .)
+    NUMBER          reduce using rule 12 (PowExpr -> UnaryExpr .)
+    VAR             reduce using rule 12 (PowExpr -> UnaryExpr .)
+    FUNCTION        reduce using rule 12 (PowExpr -> UnaryExpr .)
+    LPAREN          reduce using rule 12 (PowExpr -> UnaryExpr .)
+    COMPARE         reduce using rule 12 (PowExpr -> UnaryExpr .)
+    PLUS            reduce using rule 12 (PowExpr -> UnaryExpr .)
+    MINUS           reduce using rule 12 (PowExpr -> UnaryExpr .)
+    $end            reduce using rule 12 (PowExpr -> UnaryExpr .)
+    RPAREN          reduce using rule 12 (PowExpr -> UnaryExpr .)
 
-    expression                     shift and go to state 18
 
 state 9
 
-    (3) expression -> expression MINUS . expression
-    (1) expression -> . expression COMPARE expression
-    (2) expression -> . expression PLUS expression
-    (3) expression -> . expression MINUS expression
-    (4) expression -> . expression MULT expression
-    (5) expression -> . expression DIV expression
-    (6) expression -> . expression POW expression
-    (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . VAR
-    (9) expression -> . NUMBER
-    (10) expression -> . MINUS expression
-    (11) expression -> . FUNCTION LPAREN expression RPAREN
-    (12) expression -> . FUNCTION VAR
+    (17) UnaryExpr -> Primary .
 
-    LPAREN          shift and go to state 3
-    VAR             shift and go to state 4
-    NUMBER          shift and go to state 5
-    MINUS           shift and go to state 2
-    FUNCTION        shift and go to state 6
+    POW             reduce using rule 17 (UnaryExpr -> Primary .)
+    MULT            reduce using rule 17 (UnaryExpr -> Primary .)
+    DIV             reduce using rule 17 (UnaryExpr -> Primary .)
+    NUMBER          reduce using rule 17 (UnaryExpr -> Primary .)
+    VAR             reduce using rule 17 (UnaryExpr -> Primary .)
+    FUNCTION        reduce using rule 17 (UnaryExpr -> Primary .)
+    LPAREN          reduce using rule 17 (UnaryExpr -> Primary .)
+    COMPARE         reduce using rule 17 (UnaryExpr -> Primary .)
+    PLUS            reduce using rule 17 (UnaryExpr -> Primary .)
+    MINUS           reduce using rule 17 (UnaryExpr -> Primary .)
+    $end            reduce using rule 17 (UnaryExpr -> Primary .)
+    RPAREN          reduce using rule 17 (UnaryExpr -> Primary .)
 
-    expression                     shift and go to state 19
 
 state 10
 
-    (4) expression -> expression MULT . expression
-    (1) expression -> . expression COMPARE expression
-    (2) expression -> . expression PLUS expression
-    (3) expression -> . expression MINUS expression
-    (4) expression -> . expression MULT expression
-    (5) expression -> . expression DIV expression
-    (6) expression -> . expression POW expression
-    (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . VAR
-    (9) expression -> . NUMBER
-    (10) expression -> . MINUS expression
-    (11) expression -> . FUNCTION LPAREN expression RPAREN
-    (12) expression -> . FUNCTION VAR
+    (18) Primary -> Number .
 
-    LPAREN          shift and go to state 3
-    VAR             shift and go to state 4
-    NUMBER          shift and go to state 5
-    MINUS           shift and go to state 2
-    FUNCTION        shift and go to state 6
+    POW             reduce using rule 18 (Primary -> Number .)
+    MULT            reduce using rule 18 (Primary -> Number .)
+    DIV             reduce using rule 18 (Primary -> Number .)
+    NUMBER          reduce using rule 18 (Primary -> Number .)
+    VAR             reduce using rule 18 (Primary -> Number .)
+    FUNCTION        reduce using rule 18 (Primary -> Number .)
+    LPAREN          reduce using rule 18 (Primary -> Number .)
+    COMPARE         reduce using rule 18 (Primary -> Number .)
+    PLUS            reduce using rule 18 (Primary -> Number .)
+    MINUS           reduce using rule 18 (Primary -> Number .)
+    $end            reduce using rule 18 (Primary -> Number .)
+    RPAREN          reduce using rule 18 (Primary -> Number .)
 
-    expression                     shift and go to state 20
 
 state 11
 
-    (5) expression -> expression DIV . expression
-    (1) expression -> . expression COMPARE expression
-    (2) expression -> . expression PLUS expression
-    (3) expression -> . expression MINUS expression
-    (4) expression -> . expression MULT expression
-    (5) expression -> . expression DIV expression
-    (6) expression -> . expression POW expression
-    (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . VAR
-    (9) expression -> . NUMBER
-    (10) expression -> . MINUS expression
-    (11) expression -> . FUNCTION LPAREN expression RPAREN
-    (12) expression -> . FUNCTION VAR
+    (19) Primary -> Variable .
 
-    LPAREN          shift and go to state 3
-    VAR             shift and go to state 4
-    NUMBER          shift and go to state 5
-    MINUS           shift and go to state 2
-    FUNCTION        shift and go to state 6
+    POW             reduce using rule 19 (Primary -> Variable .)
+    MULT            reduce using rule 19 (Primary -> Variable .)
+    DIV             reduce using rule 19 (Primary -> Variable .)
+    NUMBER          reduce using rule 19 (Primary -> Variable .)
+    VAR             reduce using rule 19 (Primary -> Variable .)
+    FUNCTION        reduce using rule 19 (Primary -> Variable .)
+    LPAREN          reduce using rule 19 (Primary -> Variable .)
+    COMPARE         reduce using rule 19 (Primary -> Variable .)
+    PLUS            reduce using rule 19 (Primary -> Variable .)
+    MINUS           reduce using rule 19 (Primary -> Variable .)
+    $end            reduce using rule 19 (Primary -> Variable .)
+    RPAREN          reduce using rule 19 (Primary -> Variable .)
 
-    expression                     shift and go to state 21
 
 state 12
 
-    (6) expression -> expression POW . expression
-    (1) expression -> . expression COMPARE expression
-    (2) expression -> . expression PLUS expression
-    (3) expression -> . expression MINUS expression
-    (4) expression -> . expression MULT expression
-    (5) expression -> . expression DIV expression
-    (6) expression -> . expression POW expression
-    (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . VAR
-    (9) expression -> . NUMBER
-    (10) expression -> . MINUS expression
-    (11) expression -> . FUNCTION LPAREN expression RPAREN
-    (12) expression -> . FUNCTION VAR
+    (20) Primary -> Function .
 
-    LPAREN          shift and go to state 3
-    VAR             shift and go to state 4
-    NUMBER          shift and go to state 5
-    MINUS           shift and go to state 2
-    FUNCTION        shift and go to state 6
+    POW             reduce using rule 20 (Primary -> Function .)
+    MULT            reduce using rule 20 (Primary -> Function .)
+    DIV             reduce using rule 20 (Primary -> Function .)
+    NUMBER          reduce using rule 20 (Primary -> Function .)
+    VAR             reduce using rule 20 (Primary -> Function .)
+    FUNCTION        reduce using rule 20 (Primary -> Function .)
+    LPAREN          reduce using rule 20 (Primary -> Function .)
+    COMPARE         reduce using rule 20 (Primary -> Function .)
+    PLUS            reduce using rule 20 (Primary -> Function .)
+    MINUS           reduce using rule 20 (Primary -> Function .)
+    $end            reduce using rule 20 (Primary -> Function .)
+    RPAREN          reduce using rule 20 (Primary -> Function .)
 
-    expression                     shift and go to state 22
 
 state 13
 
-    (10) expression -> MINUS expression .
-    (1) expression -> expression . COMPARE expression
-    (2) expression -> expression . PLUS expression
-    (3) expression -> expression . MINUS expression
-    (4) expression -> expression . MULT expression
-    (5) expression -> expression . DIV expression
-    (6) expression -> expression . POW expression
+    (21) Primary -> Group .
 
-    COMPARE         reduce using rule 10 (expression -> MINUS expression .)
-    PLUS            reduce using rule 10 (expression -> MINUS expression .)
-    MINUS           reduce using rule 10 (expression -> MINUS expression .)
-    MULT            reduce using rule 10 (expression -> MINUS expression .)
-    DIV             reduce using rule 10 (expression -> MINUS expression .)
-    POW             reduce using rule 10 (expression -> MINUS expression .)
-    $end            reduce using rule 10 (expression -> MINUS expression .)
-    RPAREN          reduce using rule 10 (expression -> MINUS expression .)
-
-  ! COMPARE         [ shift and go to state 7 ]
-  ! PLUS            [ shift and go to state 8 ]
-  ! MINUS           [ shift and go to state 9 ]
-  ! MULT            [ shift and go to state 10 ]
-  ! DIV             [ shift and go to state 11 ]
-  ! POW             [ shift and go to state 12 ]
+    POW             reduce using rule 21 (Primary -> Group .)
+    MULT            reduce using rule 21 (Primary -> Group .)
+    DIV             reduce using rule 21 (Primary -> Group .)
+    NUMBER          reduce using rule 21 (Primary -> Group .)
+    VAR             reduce using rule 21 (Primary -> Group .)
+    FUNCTION        reduce using rule 21 (Primary -> Group .)
+    LPAREN          reduce using rule 21 (Primary -> Group .)
+    COMPARE         reduce using rule 21 (Primary -> Group .)
+    PLUS            reduce using rule 21 (Primary -> Group .)
+    MINUS           reduce using rule 21 (Primary -> Group .)
+    $end            reduce using rule 21 (Primary -> Group .)
+    RPAREN          reduce using rule 21 (Primary -> Group .)
 
 
 state 14
 
-    (7) expression -> LPAREN expression . RPAREN
-    (1) expression -> expression . COMPARE expression
-    (2) expression -> expression . PLUS expression
-    (3) expression -> expression . MINUS expression
-    (4) expression -> expression . MULT expression
-    (5) expression -> expression . DIV expression
-    (6) expression -> expression . POW expression
+    (22) Number -> NUMBER .
 
-    RPAREN          shift and go to state 23
-    COMPARE         shift and go to state 7
-    PLUS            shift and go to state 8
-    MINUS           shift and go to state 9
-    MULT            shift and go to state 10
-    DIV             shift and go to state 11
-    POW             shift and go to state 12
+    POW             reduce using rule 22 (Number -> NUMBER .)
+    MULT            reduce using rule 22 (Number -> NUMBER .)
+    DIV             reduce using rule 22 (Number -> NUMBER .)
+    NUMBER          reduce using rule 22 (Number -> NUMBER .)
+    VAR             reduce using rule 22 (Number -> NUMBER .)
+    FUNCTION        reduce using rule 22 (Number -> NUMBER .)
+    LPAREN          reduce using rule 22 (Number -> NUMBER .)
+    COMPARE         reduce using rule 22 (Number -> NUMBER .)
+    PLUS            reduce using rule 22 (Number -> NUMBER .)
+    MINUS           reduce using rule 22 (Number -> NUMBER .)
+    $end            reduce using rule 22 (Number -> NUMBER .)
+    RPAREN          reduce using rule 22 (Number -> NUMBER .)
 
 
 state 15
 
-    (11) expression -> FUNCTION LPAREN . expression RPAREN
-    (1) expression -> . expression COMPARE expression
-    (2) expression -> . expression PLUS expression
-    (3) expression -> . expression MINUS expression
-    (4) expression -> . expression MULT expression
-    (5) expression -> . expression DIV expression
-    (6) expression -> . expression POW expression
-    (7) expression -> . LPAREN expression RPAREN
-    (8) expression -> . VAR
-    (9) expression -> . NUMBER
-    (10) expression -> . MINUS expression
-    (11) expression -> . FUNCTION LPAREN expression RPAREN
-    (12) expression -> . FUNCTION VAR
+    (23) Variable -> VAR .
 
-    LPAREN          shift and go to state 3
-    VAR             shift and go to state 4
-    NUMBER          shift and go to state 5
-    MINUS           shift and go to state 2
-    FUNCTION        shift and go to state 6
+    POW             reduce using rule 23 (Variable -> VAR .)
+    MULT            reduce using rule 23 (Variable -> VAR .)
+    DIV             reduce using rule 23 (Variable -> VAR .)
+    NUMBER          reduce using rule 23 (Variable -> VAR .)
+    VAR             reduce using rule 23 (Variable -> VAR .)
+    FUNCTION        reduce using rule 23 (Variable -> VAR .)
+    LPAREN          reduce using rule 23 (Variable -> VAR .)
+    COMPARE         reduce using rule 23 (Variable -> VAR .)
+    PLUS            reduce using rule 23 (Variable -> VAR .)
+    MINUS           reduce using rule 23 (Variable -> VAR .)
+    $end            reduce using rule 23 (Variable -> VAR .)
+    RPAREN          reduce using rule 23 (Variable -> VAR .)
 
-    expression                     shift and go to state 24
 
 state 16
 
-    (12) expression -> FUNCTION VAR .
+    (24) Function -> FUNCTION . LPAREN AddExpr RPAREN
+    (25) Function -> FUNCTION . Variable
+    (26) Function -> FUNCTION . Number
+    (23) Variable -> . VAR
+    (22) Number -> . NUMBER
 
-    COMPARE         reduce using rule 12 (expression -> FUNCTION VAR .)
-    PLUS            reduce using rule 12 (expression -> FUNCTION VAR .)
-    MINUS           reduce using rule 12 (expression -> FUNCTION VAR .)
-    MULT            reduce using rule 12 (expression -> FUNCTION VAR .)
-    DIV             reduce using rule 12 (expression -> FUNCTION VAR .)
-    POW             reduce using rule 12 (expression -> FUNCTION VAR .)
-    $end            reduce using rule 12 (expression -> FUNCTION VAR .)
-    RPAREN          reduce using rule 12 (expression -> FUNCTION VAR .)
+    LPAREN          shift and go to state 28
+    VAR             shift and go to state 15
+    NUMBER          shift and go to state 14
 
+    Variable                       shift and go to state 29
+    Number                         shift and go to state 30
 
 state 17
 
-    (1) expression -> expression COMPARE expression .
-    (1) expression -> expression . COMPARE expression
-    (2) expression -> expression . PLUS expression
-    (3) expression -> expression . MINUS expression
-    (4) expression -> expression . MULT expression
-    (5) expression -> expression . DIV expression
-    (6) expression -> expression . POW expression
+    (27) Group -> LPAREN . AddExpr RPAREN
+    (4) AddExpr -> . AddExpr PLUS MulExpr
+    (5) AddExpr -> . AddExpr MINUS MulExpr
+    (6) AddExpr -> . MulExpr
+    (7) MulExpr -> . MulExpr MULT PowExpr
+    (8) MulExpr -> . MulExpr DIV PowExpr
+    (9) MulExpr -> . MulExpr PowExpr2
+    (10) MulExpr -> . PowExpr
+    (11) PowExpr -> . UnaryExpr POW PowExpr
+    (12) PowExpr -> . UnaryExpr
+    (15) UnaryExpr -> . PLUS UnaryExpr
+    (16) UnaryExpr -> . MINUS UnaryExpr
+    (17) UnaryExpr -> . Primary
+    (18) Primary -> . Number
+    (19) Primary -> . Variable
+    (20) Primary -> . Function
+    (21) Primary -> . Group
+    (22) Number -> . NUMBER
+    (23) Variable -> . VAR
+    (24) Function -> . FUNCTION LPAREN AddExpr RPAREN
+    (25) Function -> . FUNCTION Variable
+    (26) Function -> . FUNCTION Number
+    (27) Group -> . LPAREN AddExpr RPAREN
 
-    COMPARE         reduce using rule 1 (expression -> expression COMPARE expression .)
-    $end            reduce using rule 1 (expression -> expression COMPARE expression .)
-    RPAREN          reduce using rule 1 (expression -> expression COMPARE expression .)
-    PLUS            shift and go to state 8
-    MINUS           shift and go to state 9
-    MULT            shift and go to state 10
-    DIV             shift and go to state 11
-    POW             shift and go to state 12
+    PLUS            shift and go to state 4
+    MINUS           shift and go to state 6
+    NUMBER          shift and go to state 14
+    VAR             shift and go to state 15
+    FUNCTION        shift and go to state 16
+    LPAREN          shift and go to state 17
 
-  ! PLUS            [ reduce using rule 1 (expression -> expression COMPARE expression .) ]
-  ! MINUS           [ reduce using rule 1 (expression -> expression COMPARE expression .) ]
-  ! MULT            [ reduce using rule 1 (expression -> expression COMPARE expression .) ]
-  ! DIV             [ reduce using rule 1 (expression -> expression COMPARE expression .) ]
-  ! POW             [ reduce using rule 1 (expression -> expression COMPARE expression .) ]
-  ! COMPARE         [ shift and go to state 7 ]
-
+    AddExpr                        shift and go to state 31
+    MulExpr                        shift and go to state 5
+    PowExpr                        shift and go to state 7
+    UnaryExpr                      shift and go to state 8
+    Primary                        shift and go to state 9
+    Number                         shift and go to state 10
+    Variable                       shift and go to state 11
+    Function                       shift and go to state 12
+    Group                          shift and go to state 13
 
 state 18
 
-    (2) expression -> expression PLUS expression .
-    (1) expression -> expression . COMPARE expression
-    (2) expression -> expression . PLUS expression
-    (3) expression -> expression . MINUS expression
-    (4) expression -> expression . MULT expression
-    (5) expression -> expression . DIV expression
-    (6) expression -> expression . POW expression
+    (2) CompareExpr -> AddExpr COMPARE . AddExpr
+    (4) AddExpr -> . AddExpr PLUS MulExpr
+    (5) AddExpr -> . AddExpr MINUS MulExpr
+    (6) AddExpr -> . MulExpr
+    (7) MulExpr -> . MulExpr MULT PowExpr
+    (8) MulExpr -> . MulExpr DIV PowExpr
+    (9) MulExpr -> . MulExpr PowExpr2
+    (10) MulExpr -> . PowExpr
+    (11) PowExpr -> . UnaryExpr POW PowExpr
+    (12) PowExpr -> . UnaryExpr
+    (15) UnaryExpr -> . PLUS UnaryExpr
+    (16) UnaryExpr -> . MINUS UnaryExpr
+    (17) UnaryExpr -> . Primary
+    (18) Primary -> . Number
+    (19) Primary -> . Variable
+    (20) Primary -> . Function
+    (21) Primary -> . Group
+    (22) Number -> . NUMBER
+    (23) Variable -> . VAR
+    (24) Function -> . FUNCTION LPAREN AddExpr RPAREN
+    (25) Function -> . FUNCTION Variable
+    (26) Function -> . FUNCTION Number
+    (27) Group -> . LPAREN AddExpr RPAREN
 
-    COMPARE         reduce using rule 2 (expression -> expression PLUS expression .)
-    PLUS            reduce using rule 2 (expression -> expression PLUS expression .)
-    MINUS           reduce using rule 2 (expression -> expression PLUS expression .)
-    $end            reduce using rule 2 (expression -> expression PLUS expression .)
-    RPAREN          reduce using rule 2 (expression -> expression PLUS expression .)
-    MULT            shift and go to state 10
-    DIV             shift and go to state 11
-    POW             shift and go to state 12
+    PLUS            shift and go to state 4
+    MINUS           shift and go to state 6
+    NUMBER          shift and go to state 14
+    VAR             shift and go to state 15
+    FUNCTION        shift and go to state 16
+    LPAREN          shift and go to state 17
 
-  ! MULT            [ reduce using rule 2 (expression -> expression PLUS expression .) ]
-  ! DIV             [ reduce using rule 2 (expression -> expression PLUS expression .) ]
-  ! POW             [ reduce using rule 2 (expression -> expression PLUS expression .) ]
-  ! COMPARE         [ shift and go to state 7 ]
-  ! PLUS            [ shift and go to state 8 ]
-  ! MINUS           [ shift and go to state 9 ]
-
+    AddExpr                        shift and go to state 32
+    MulExpr                        shift and go to state 5
+    PowExpr                        shift and go to state 7
+    UnaryExpr                      shift and go to state 8
+    Primary                        shift and go to state 9
+    Number                         shift and go to state 10
+    Variable                       shift and go to state 11
+    Function                       shift and go to state 12
+    Group                          shift and go to state 13
 
 state 19
 
-    (3) expression -> expression MINUS expression .
-    (1) expression -> expression . COMPARE expression
-    (2) expression -> expression . PLUS expression
-    (3) expression -> expression . MINUS expression
-    (4) expression -> expression . MULT expression
-    (5) expression -> expression . DIV expression
-    (6) expression -> expression . POW expression
+    (4) AddExpr -> AddExpr PLUS . MulExpr
+    (7) MulExpr -> . MulExpr MULT PowExpr
+    (8) MulExpr -> . MulExpr DIV PowExpr
+    (9) MulExpr -> . MulExpr PowExpr2
+    (10) MulExpr -> . PowExpr
+    (11) PowExpr -> . UnaryExpr POW PowExpr
+    (12) PowExpr -> . UnaryExpr
+    (15) UnaryExpr -> . PLUS UnaryExpr
+    (16) UnaryExpr -> . MINUS UnaryExpr
+    (17) UnaryExpr -> . Primary
+    (18) Primary -> . Number
+    (19) Primary -> . Variable
+    (20) Primary -> . Function
+    (21) Primary -> . Group
+    (22) Number -> . NUMBER
+    (23) Variable -> . VAR
+    (24) Function -> . FUNCTION LPAREN AddExpr RPAREN
+    (25) Function -> . FUNCTION Variable
+    (26) Function -> . FUNCTION Number
+    (27) Group -> . LPAREN AddExpr RPAREN
 
-    COMPARE         reduce using rule 3 (expression -> expression MINUS expression .)
-    PLUS            reduce using rule 3 (expression -> expression MINUS expression .)
-    MINUS           reduce using rule 3 (expression -> expression MINUS expression .)
-    $end            reduce using rule 3 (expression -> expression MINUS expression .)
-    RPAREN          reduce using rule 3 (expression -> expression MINUS expression .)
-    MULT            shift and go to state 10
-    DIV             shift and go to state 11
-    POW             shift and go to state 12
+    PLUS            shift and go to state 4
+    MINUS           shift and go to state 6
+    NUMBER          shift and go to state 14
+    VAR             shift and go to state 15
+    FUNCTION        shift and go to state 16
+    LPAREN          shift and go to state 17
 
-  ! MULT            [ reduce using rule 3 (expression -> expression MINUS expression .) ]
-  ! DIV             [ reduce using rule 3 (expression -> expression MINUS expression .) ]
-  ! POW             [ reduce using rule 3 (expression -> expression MINUS expression .) ]
-  ! COMPARE         [ shift and go to state 7 ]
-  ! PLUS            [ shift and go to state 8 ]
-  ! MINUS           [ shift and go to state 9 ]
-
+    MulExpr                        shift and go to state 33
+    PowExpr                        shift and go to state 7
+    UnaryExpr                      shift and go to state 8
+    Primary                        shift and go to state 9
+    Number                         shift and go to state 10
+    Variable                       shift and go to state 11
+    Function                       shift and go to state 12
+    Group                          shift and go to state 13
 
 state 20
 
-    (4) expression -> expression MULT expression .
-    (1) expression -> expression . COMPARE expression
-    (2) expression -> expression . PLUS expression
-    (3) expression -> expression . MINUS expression
-    (4) expression -> expression . MULT expression
-    (5) expression -> expression . DIV expression
-    (6) expression -> expression . POW expression
+    (5) AddExpr -> AddExpr MINUS . MulExpr
+    (7) MulExpr -> . MulExpr MULT PowExpr
+    (8) MulExpr -> . MulExpr DIV PowExpr
+    (9) MulExpr -> . MulExpr PowExpr2
+    (10) MulExpr -> . PowExpr
+    (11) PowExpr -> . UnaryExpr POW PowExpr
+    (12) PowExpr -> . UnaryExpr
+    (15) UnaryExpr -> . PLUS UnaryExpr
+    (16) UnaryExpr -> . MINUS UnaryExpr
+    (17) UnaryExpr -> . Primary
+    (18) Primary -> . Number
+    (19) Primary -> . Variable
+    (20) Primary -> . Function
+    (21) Primary -> . Group
+    (22) Number -> . NUMBER
+    (23) Variable -> . VAR
+    (24) Function -> . FUNCTION LPAREN AddExpr RPAREN
+    (25) Function -> . FUNCTION Variable
+    (26) Function -> . FUNCTION Number
+    (27) Group -> . LPAREN AddExpr RPAREN
 
-    COMPARE         reduce using rule 4 (expression -> expression MULT expression .)
-    PLUS            reduce using rule 4 (expression -> expression MULT expression .)
-    MINUS           reduce using rule 4 (expression -> expression MULT expression .)
-    MULT            reduce using rule 4 (expression -> expression MULT expression .)
-    DIV             reduce using rule 4 (expression -> expression MULT expression .)
-    $end            reduce using rule 4 (expression -> expression MULT expression .)
-    RPAREN          reduce using rule 4 (expression -> expression MULT expression .)
-    POW             shift and go to state 12
+    PLUS            shift and go to state 4
+    MINUS           shift and go to state 6
+    NUMBER          shift and go to state 14
+    VAR             shift and go to state 15
+    FUNCTION        shift and go to state 16
+    LPAREN          shift and go to state 17
 
-  ! POW             [ reduce using rule 4 (expression -> expression MULT expression .) ]
-  ! COMPARE         [ shift and go to state 7 ]
-  ! PLUS            [ shift and go to state 8 ]
-  ! MINUS           [ shift and go to state 9 ]
-  ! MULT            [ shift and go to state 10 ]
-  ! DIV             [ shift and go to state 11 ]
-
+    MulExpr                        shift and go to state 34
+    PowExpr                        shift and go to state 7
+    UnaryExpr                      shift and go to state 8
+    Primary                        shift and go to state 9
+    Number                         shift and go to state 10
+    Variable                       shift and go to state 11
+    Function                       shift and go to state 12
+    Group                          shift and go to state 13
 
 state 21
 
-    (5) expression -> expression DIV expression .
-    (1) expression -> expression . COMPARE expression
-    (2) expression -> expression . PLUS expression
-    (3) expression -> expression . MINUS expression
-    (4) expression -> expression . MULT expression
-    (5) expression -> expression . DIV expression
-    (6) expression -> expression . POW expression
+    (15) UnaryExpr -> PLUS UnaryExpr .
 
-    COMPARE         reduce using rule 5 (expression -> expression DIV expression .)
-    PLUS            reduce using rule 5 (expression -> expression DIV expression .)
-    MINUS           reduce using rule 5 (expression -> expression DIV expression .)
-    MULT            reduce using rule 5 (expression -> expression DIV expression .)
-    DIV             reduce using rule 5 (expression -> expression DIV expression .)
-    $end            reduce using rule 5 (expression -> expression DIV expression .)
-    RPAREN          reduce using rule 5 (expression -> expression DIV expression .)
-    POW             shift and go to state 12
-
-  ! POW             [ reduce using rule 5 (expression -> expression DIV expression .) ]
-  ! COMPARE         [ shift and go to state 7 ]
-  ! PLUS            [ shift and go to state 8 ]
-  ! MINUS           [ shift and go to state 9 ]
-  ! MULT            [ shift and go to state 10 ]
-  ! DIV             [ shift and go to state 11 ]
+    POW             reduce using rule 15 (UnaryExpr -> PLUS UnaryExpr .)
+    MULT            reduce using rule 15 (UnaryExpr -> PLUS UnaryExpr .)
+    DIV             reduce using rule 15 (UnaryExpr -> PLUS UnaryExpr .)
+    NUMBER          reduce using rule 15 (UnaryExpr -> PLUS UnaryExpr .)
+    VAR             reduce using rule 15 (UnaryExpr -> PLUS UnaryExpr .)
+    FUNCTION        reduce using rule 15 (UnaryExpr -> PLUS UnaryExpr .)
+    LPAREN          reduce using rule 15 (UnaryExpr -> PLUS UnaryExpr .)
+    COMPARE         reduce using rule 15 (UnaryExpr -> PLUS UnaryExpr .)
+    PLUS            reduce using rule 15 (UnaryExpr -> PLUS UnaryExpr .)
+    MINUS           reduce using rule 15 (UnaryExpr -> PLUS UnaryExpr .)
+    $end            reduce using rule 15 (UnaryExpr -> PLUS UnaryExpr .)
+    RPAREN          reduce using rule 15 (UnaryExpr -> PLUS UnaryExpr .)
 
 
 state 22
 
-    (6) expression -> expression POW expression .
-    (1) expression -> expression . COMPARE expression
-    (2) expression -> expression . PLUS expression
-    (3) expression -> expression . MINUS expression
-    (4) expression -> expression . MULT expression
-    (5) expression -> expression . DIV expression
-    (6) expression -> expression . POW expression
+    (7) MulExpr -> MulExpr MULT . PowExpr
+    (11) PowExpr -> . UnaryExpr POW PowExpr
+    (12) PowExpr -> . UnaryExpr
+    (15) UnaryExpr -> . PLUS UnaryExpr
+    (16) UnaryExpr -> . MINUS UnaryExpr
+    (17) UnaryExpr -> . Primary
+    (18) Primary -> . Number
+    (19) Primary -> . Variable
+    (20) Primary -> . Function
+    (21) Primary -> . Group
+    (22) Number -> . NUMBER
+    (23) Variable -> . VAR
+    (24) Function -> . FUNCTION LPAREN AddExpr RPAREN
+    (25) Function -> . FUNCTION Variable
+    (26) Function -> . FUNCTION Number
+    (27) Group -> . LPAREN AddExpr RPAREN
 
-    COMPARE         reduce using rule 6 (expression -> expression POW expression .)
-    PLUS            reduce using rule 6 (expression -> expression POW expression .)
-    MINUS           reduce using rule 6 (expression -> expression POW expression .)
-    MULT            reduce using rule 6 (expression -> expression POW expression .)
-    DIV             reduce using rule 6 (expression -> expression POW expression .)
-    $end            reduce using rule 6 (expression -> expression POW expression .)
-    RPAREN          reduce using rule 6 (expression -> expression POW expression .)
-    POW             shift and go to state 12
+    PLUS            shift and go to state 4
+    MINUS           shift and go to state 6
+    NUMBER          shift and go to state 14
+    VAR             shift and go to state 15
+    FUNCTION        shift and go to state 16
+    LPAREN          shift and go to state 17
 
-  ! POW             [ reduce using rule 6 (expression -> expression POW expression .) ]
-  ! COMPARE         [ shift and go to state 7 ]
-  ! PLUS            [ shift and go to state 8 ]
-  ! MINUS           [ shift and go to state 9 ]
-  ! MULT            [ shift and go to state 10 ]
-  ! DIV             [ shift and go to state 11 ]
-
+    PowExpr                        shift and go to state 35
+    UnaryExpr                      shift and go to state 8
+    Primary                        shift and go to state 9
+    Number                         shift and go to state 10
+    Variable                       shift and go to state 11
+    Function                       shift and go to state 12
+    Group                          shift and go to state 13
 
 state 23
 
-    (7) expression -> LPAREN expression RPAREN .
+    (8) MulExpr -> MulExpr DIV . PowExpr
+    (11) PowExpr -> . UnaryExpr POW PowExpr
+    (12) PowExpr -> . UnaryExpr
+    (15) UnaryExpr -> . PLUS UnaryExpr
+    (16) UnaryExpr -> . MINUS UnaryExpr
+    (17) UnaryExpr -> . Primary
+    (18) Primary -> . Number
+    (19) Primary -> . Variable
+    (20) Primary -> . Function
+    (21) Primary -> . Group
+    (22) Number -> . NUMBER
+    (23) Variable -> . VAR
+    (24) Function -> . FUNCTION LPAREN AddExpr RPAREN
+    (25) Function -> . FUNCTION Variable
+    (26) Function -> . FUNCTION Number
+    (27) Group -> . LPAREN AddExpr RPAREN
 
-    COMPARE         reduce using rule 7 (expression -> LPAREN expression RPAREN .)
-    PLUS            reduce using rule 7 (expression -> LPAREN expression RPAREN .)
-    MINUS           reduce using rule 7 (expression -> LPAREN expression RPAREN .)
-    MULT            reduce using rule 7 (expression -> LPAREN expression RPAREN .)
-    DIV             reduce using rule 7 (expression -> LPAREN expression RPAREN .)
-    POW             reduce using rule 7 (expression -> LPAREN expression RPAREN .)
-    $end            reduce using rule 7 (expression -> LPAREN expression RPAREN .)
-    RPAREN          reduce using rule 7 (expression -> LPAREN expression RPAREN .)
+    PLUS            shift and go to state 4
+    MINUS           shift and go to state 6
+    NUMBER          shift and go to state 14
+    VAR             shift and go to state 15
+    FUNCTION        shift and go to state 16
+    LPAREN          shift and go to state 17
 
+    PowExpr                        shift and go to state 36
+    UnaryExpr                      shift and go to state 8
+    Primary                        shift and go to state 9
+    Number                         shift and go to state 10
+    Variable                       shift and go to state 11
+    Function                       shift and go to state 12
+    Group                          shift and go to state 13
 
 state 24
 
-    (11) expression -> FUNCTION LPAREN expression . RPAREN
-    (1) expression -> expression . COMPARE expression
-    (2) expression -> expression . PLUS expression
-    (3) expression -> expression . MINUS expression
-    (4) expression -> expression . MULT expression
-    (5) expression -> expression . DIV expression
-    (6) expression -> expression . POW expression
+    (9) MulExpr -> MulExpr PowExpr2 .
 
-    RPAREN          shift and go to state 25
-    COMPARE         shift and go to state 7
-    PLUS            shift and go to state 8
-    MINUS           shift and go to state 9
-    MULT            shift and go to state 10
-    DIV             shift and go to state 11
-    POW             shift and go to state 12
+    MULT            reduce using rule 9 (MulExpr -> MulExpr PowExpr2 .)
+    DIV             reduce using rule 9 (MulExpr -> MulExpr PowExpr2 .)
+    NUMBER          reduce using rule 9 (MulExpr -> MulExpr PowExpr2 .)
+    VAR             reduce using rule 9 (MulExpr -> MulExpr PowExpr2 .)
+    FUNCTION        reduce using rule 9 (MulExpr -> MulExpr PowExpr2 .)
+    LPAREN          reduce using rule 9 (MulExpr -> MulExpr PowExpr2 .)
+    COMPARE         reduce using rule 9 (MulExpr -> MulExpr PowExpr2 .)
+    PLUS            reduce using rule 9 (MulExpr -> MulExpr PowExpr2 .)
+    MINUS           reduce using rule 9 (MulExpr -> MulExpr PowExpr2 .)
+    $end            reduce using rule 9 (MulExpr -> MulExpr PowExpr2 .)
+    RPAREN          reduce using rule 9 (MulExpr -> MulExpr PowExpr2 .)
 
 
 state 25
 
-    (11) expression -> FUNCTION LPAREN expression RPAREN .
+    (13) PowExpr2 -> Primary . POW PowExpr
+    (14) PowExpr2 -> Primary .
 
-    COMPARE         reduce using rule 11 (expression -> FUNCTION LPAREN expression RPAREN .)
-    PLUS            reduce using rule 11 (expression -> FUNCTION LPAREN expression RPAREN .)
-    MINUS           reduce using rule 11 (expression -> FUNCTION LPAREN expression RPAREN .)
-    MULT            reduce using rule 11 (expression -> FUNCTION LPAREN expression RPAREN .)
-    DIV             reduce using rule 11 (expression -> FUNCTION LPAREN expression RPAREN .)
-    POW             reduce using rule 11 (expression -> FUNCTION LPAREN expression RPAREN .)
-    $end            reduce using rule 11 (expression -> FUNCTION LPAREN expression RPAREN .)
-    RPAREN          reduce using rule 11 (expression -> FUNCTION LPAREN expression RPAREN .)
+    POW             shift and go to state 37
+    MULT            reduce using rule 14 (PowExpr2 -> Primary .)
+    DIV             reduce using rule 14 (PowExpr2 -> Primary .)
+    NUMBER          reduce using rule 14 (PowExpr2 -> Primary .)
+    VAR             reduce using rule 14 (PowExpr2 -> Primary .)
+    FUNCTION        reduce using rule 14 (PowExpr2 -> Primary .)
+    LPAREN          reduce using rule 14 (PowExpr2 -> Primary .)
+    COMPARE         reduce using rule 14 (PowExpr2 -> Primary .)
+    PLUS            reduce using rule 14 (PowExpr2 -> Primary .)
+    MINUS           reduce using rule 14 (PowExpr2 -> Primary .)
+    $end            reduce using rule 14 (PowExpr2 -> Primary .)
+    RPAREN          reduce using rule 14 (PowExpr2 -> Primary .)
+
+
+state 26
+
+    (16) UnaryExpr -> MINUS UnaryExpr .
+
+    POW             reduce using rule 16 (UnaryExpr -> MINUS UnaryExpr .)
+    MULT            reduce using rule 16 (UnaryExpr -> MINUS UnaryExpr .)
+    DIV             reduce using rule 16 (UnaryExpr -> MINUS UnaryExpr .)
+    NUMBER          reduce using rule 16 (UnaryExpr -> MINUS UnaryExpr .)
+    VAR             reduce using rule 16 (UnaryExpr -> MINUS UnaryExpr .)
+    FUNCTION        reduce using rule 16 (UnaryExpr -> MINUS UnaryExpr .)
+    LPAREN          reduce using rule 16 (UnaryExpr -> MINUS UnaryExpr .)
+    COMPARE         reduce using rule 16 (UnaryExpr -> MINUS UnaryExpr .)
+    PLUS            reduce using rule 16 (UnaryExpr -> MINUS UnaryExpr .)
+    MINUS           reduce using rule 16 (UnaryExpr -> MINUS UnaryExpr .)
+    $end            reduce using rule 16 (UnaryExpr -> MINUS UnaryExpr .)
+    RPAREN          reduce using rule 16 (UnaryExpr -> MINUS UnaryExpr .)
+
+
+state 27
+
+    (11) PowExpr -> UnaryExpr POW . PowExpr
+    (11) PowExpr -> . UnaryExpr POW PowExpr
+    (12) PowExpr -> . UnaryExpr
+    (15) UnaryExpr -> . PLUS UnaryExpr
+    (16) UnaryExpr -> . MINUS UnaryExpr
+    (17) UnaryExpr -> . Primary
+    (18) Primary -> . Number
+    (19) Primary -> . Variable
+    (20) Primary -> . Function
+    (21) Primary -> . Group
+    (22) Number -> . NUMBER
+    (23) Variable -> . VAR
+    (24) Function -> . FUNCTION LPAREN AddExpr RPAREN
+    (25) Function -> . FUNCTION Variable
+    (26) Function -> . FUNCTION Number
+    (27) Group -> . LPAREN AddExpr RPAREN
+
+    PLUS            shift and go to state 4
+    MINUS           shift and go to state 6
+    NUMBER          shift and go to state 14
+    VAR             shift and go to state 15
+    FUNCTION        shift and go to state 16
+    LPAREN          shift and go to state 17
+
+    UnaryExpr                      shift and go to state 8
+    PowExpr                        shift and go to state 38
+    Primary                        shift and go to state 9
+    Number                         shift and go to state 10
+    Variable                       shift and go to state 11
+    Function                       shift and go to state 12
+    Group                          shift and go to state 13
+
+state 28
+
+    (24) Function -> FUNCTION LPAREN . AddExpr RPAREN
+    (4) AddExpr -> . AddExpr PLUS MulExpr
+    (5) AddExpr -> . AddExpr MINUS MulExpr
+    (6) AddExpr -> . MulExpr
+    (7) MulExpr -> . MulExpr MULT PowExpr
+    (8) MulExpr -> . MulExpr DIV PowExpr
+    (9) MulExpr -> . MulExpr PowExpr2
+    (10) MulExpr -> . PowExpr
+    (11) PowExpr -> . UnaryExpr POW PowExpr
+    (12) PowExpr -> . UnaryExpr
+    (15) UnaryExpr -> . PLUS UnaryExpr
+    (16) UnaryExpr -> . MINUS UnaryExpr
+    (17) UnaryExpr -> . Primary
+    (18) Primary -> . Number
+    (19) Primary -> . Variable
+    (20) Primary -> . Function
+    (21) Primary -> . Group
+    (22) Number -> . NUMBER
+    (23) Variable -> . VAR
+    (24) Function -> . FUNCTION LPAREN AddExpr RPAREN
+    (25) Function -> . FUNCTION Variable
+    (26) Function -> . FUNCTION Number
+    (27) Group -> . LPAREN AddExpr RPAREN
+
+    PLUS            shift and go to state 4
+    MINUS           shift and go to state 6
+    NUMBER          shift and go to state 14
+    VAR             shift and go to state 15
+    FUNCTION        shift and go to state 16
+    LPAREN          shift and go to state 17
+
+    AddExpr                        shift and go to state 39
+    MulExpr                        shift and go to state 5
+    PowExpr                        shift and go to state 7
+    UnaryExpr                      shift and go to state 8
+    Primary                        shift and go to state 9
+    Number                         shift and go to state 10
+    Variable                       shift and go to state 11
+    Function                       shift and go to state 12
+    Group                          shift and go to state 13
+
+state 29
+
+    (25) Function -> FUNCTION Variable .
+
+    POW             reduce using rule 25 (Function -> FUNCTION Variable .)
+    MULT            reduce using rule 25 (Function -> FUNCTION Variable .)
+    DIV             reduce using rule 25 (Function -> FUNCTION Variable .)
+    NUMBER          reduce using rule 25 (Function -> FUNCTION Variable .)
+    VAR             reduce using rule 25 (Function -> FUNCTION Variable .)
+    FUNCTION        reduce using rule 25 (Function -> FUNCTION Variable .)
+    LPAREN          reduce using rule 25 (Function -> FUNCTION Variable .)
+    COMPARE         reduce using rule 25 (Function -> FUNCTION Variable .)
+    PLUS            reduce using rule 25 (Function -> FUNCTION Variable .)
+    MINUS           reduce using rule 25 (Function -> FUNCTION Variable .)
+    $end            reduce using rule 25 (Function -> FUNCTION Variable .)
+    RPAREN          reduce using rule 25 (Function -> FUNCTION Variable .)
+
+
+state 30
+
+    (26) Function -> FUNCTION Number .
+
+    POW             reduce using rule 26 (Function -> FUNCTION Number .)
+    MULT            reduce using rule 26 (Function -> FUNCTION Number .)
+    DIV             reduce using rule 26 (Function -> FUNCTION Number .)
+    NUMBER          reduce using rule 26 (Function -> FUNCTION Number .)
+    VAR             reduce using rule 26 (Function -> FUNCTION Number .)
+    FUNCTION        reduce using rule 26 (Function -> FUNCTION Number .)
+    LPAREN          reduce using rule 26 (Function -> FUNCTION Number .)
+    COMPARE         reduce using rule 26 (Function -> FUNCTION Number .)
+    PLUS            reduce using rule 26 (Function -> FUNCTION Number .)
+    MINUS           reduce using rule 26 (Function -> FUNCTION Number .)
+    $end            reduce using rule 26 (Function -> FUNCTION Number .)
+    RPAREN          reduce using rule 26 (Function -> FUNCTION Number .)
+
+
+state 31
+
+    (27) Group -> LPAREN AddExpr . RPAREN
+    (4) AddExpr -> AddExpr . PLUS MulExpr
+    (5) AddExpr -> AddExpr . MINUS MulExpr
+
+    RPAREN          shift and go to state 40
+    PLUS            shift and go to state 19
+    MINUS           shift and go to state 20
+
+
+state 32
+
+    (2) CompareExpr -> AddExpr COMPARE AddExpr .
+    (4) AddExpr -> AddExpr . PLUS MulExpr
+    (5) AddExpr -> AddExpr . MINUS MulExpr
+
+    $end            reduce using rule 2 (CompareExpr -> AddExpr COMPARE AddExpr .)
+    PLUS            shift and go to state 19
+    MINUS           shift and go to state 20
+
+
+state 33
+
+    (4) AddExpr -> AddExpr PLUS MulExpr .
+    (7) MulExpr -> MulExpr . MULT PowExpr
+    (8) MulExpr -> MulExpr . DIV PowExpr
+    (9) MulExpr -> MulExpr . PowExpr2
+    (13) PowExpr2 -> . Primary POW PowExpr
+    (14) PowExpr2 -> . Primary
+    (18) Primary -> . Number
+    (19) Primary -> . Variable
+    (20) Primary -> . Function
+    (21) Primary -> . Group
+    (22) Number -> . NUMBER
+    (23) Variable -> . VAR
+    (24) Function -> . FUNCTION LPAREN AddExpr RPAREN
+    (25) Function -> . FUNCTION Variable
+    (26) Function -> . FUNCTION Number
+    (27) Group -> . LPAREN AddExpr RPAREN
+
+    COMPARE         reduce using rule 4 (AddExpr -> AddExpr PLUS MulExpr .)
+    PLUS            reduce using rule 4 (AddExpr -> AddExpr PLUS MulExpr .)
+    MINUS           reduce using rule 4 (AddExpr -> AddExpr PLUS MulExpr .)
+    $end            reduce using rule 4 (AddExpr -> AddExpr PLUS MulExpr .)
+    RPAREN          reduce using rule 4 (AddExpr -> AddExpr PLUS MulExpr .)
+    MULT            shift and go to state 22
+    DIV             shift and go to state 23
+    NUMBER          shift and go to state 14
+    VAR             shift and go to state 15
+    FUNCTION        shift and go to state 16
+    LPAREN          shift and go to state 17
+
+    PowExpr2                       shift and go to state 24
+    Primary                        shift and go to state 25
+    Number                         shift and go to state 10
+    Variable                       shift and go to state 11
+    Function                       shift and go to state 12
+    Group                          shift and go to state 13
+
+state 34
+
+    (5) AddExpr -> AddExpr MINUS MulExpr .
+    (7) MulExpr -> MulExpr . MULT PowExpr
+    (8) MulExpr -> MulExpr . DIV PowExpr
+    (9) MulExpr -> MulExpr . PowExpr2
+    (13) PowExpr2 -> . Primary POW PowExpr
+    (14) PowExpr2 -> . Primary
+    (18) Primary -> . Number
+    (19) Primary -> . Variable
+    (20) Primary -> . Function
+    (21) Primary -> . Group
+    (22) Number -> . NUMBER
+    (23) Variable -> . VAR
+    (24) Function -> . FUNCTION LPAREN AddExpr RPAREN
+    (25) Function -> . FUNCTION Variable
+    (26) Function -> . FUNCTION Number
+    (27) Group -> . LPAREN AddExpr RPAREN
+
+    COMPARE         reduce using rule 5 (AddExpr -> AddExpr MINUS MulExpr .)
+    PLUS            reduce using rule 5 (AddExpr -> AddExpr MINUS MulExpr .)
+    MINUS           reduce using rule 5 (AddExpr -> AddExpr MINUS MulExpr .)
+    $end            reduce using rule 5 (AddExpr -> AddExpr MINUS MulExpr .)
+    RPAREN          reduce using rule 5 (AddExpr -> AddExpr MINUS MulExpr .)
+    MULT            shift and go to state 22
+    DIV             shift and go to state 23
+    NUMBER          shift and go to state 14
+    VAR             shift and go to state 15
+    FUNCTION        shift and go to state 16
+    LPAREN          shift and go to state 17
+
+    PowExpr2                       shift and go to state 24
+    Primary                        shift and go to state 25
+    Number                         shift and go to state 10
+    Variable                       shift and go to state 11
+    Function                       shift and go to state 12
+    Group                          shift and go to state 13
+
+state 35
+
+    (7) MulExpr -> MulExpr MULT PowExpr .
+
+    MULT            reduce using rule 7 (MulExpr -> MulExpr MULT PowExpr .)
+    DIV             reduce using rule 7 (MulExpr -> MulExpr MULT PowExpr .)
+    NUMBER          reduce using rule 7 (MulExpr -> MulExpr MULT PowExpr .)
+    VAR             reduce using rule 7 (MulExpr -> MulExpr MULT PowExpr .)
+    FUNCTION        reduce using rule 7 (MulExpr -> MulExpr MULT PowExpr .)
+    LPAREN          reduce using rule 7 (MulExpr -> MulExpr MULT PowExpr .)
+    COMPARE         reduce using rule 7 (MulExpr -> MulExpr MULT PowExpr .)
+    PLUS            reduce using rule 7 (MulExpr -> MulExpr MULT PowExpr .)
+    MINUS           reduce using rule 7 (MulExpr -> MulExpr MULT PowExpr .)
+    $end            reduce using rule 7 (MulExpr -> MulExpr MULT PowExpr .)
+    RPAREN          reduce using rule 7 (MulExpr -> MulExpr MULT PowExpr .)
+
+
+state 36
+
+    (8) MulExpr -> MulExpr DIV PowExpr .
+
+    MULT            reduce using rule 8 (MulExpr -> MulExpr DIV PowExpr .)
+    DIV             reduce using rule 8 (MulExpr -> MulExpr DIV PowExpr .)
+    NUMBER          reduce using rule 8 (MulExpr -> MulExpr DIV PowExpr .)
+    VAR             reduce using rule 8 (MulExpr -> MulExpr DIV PowExpr .)
+    FUNCTION        reduce using rule 8 (MulExpr -> MulExpr DIV PowExpr .)
+    LPAREN          reduce using rule 8 (MulExpr -> MulExpr DIV PowExpr .)
+    COMPARE         reduce using rule 8 (MulExpr -> MulExpr DIV PowExpr .)
+    PLUS            reduce using rule 8 (MulExpr -> MulExpr DIV PowExpr .)
+    MINUS           reduce using rule 8 (MulExpr -> MulExpr DIV PowExpr .)
+    $end            reduce using rule 8 (MulExpr -> MulExpr DIV PowExpr .)
+    RPAREN          reduce using rule 8 (MulExpr -> MulExpr DIV PowExpr .)
+
+
+state 37
+
+    (13) PowExpr2 -> Primary POW . PowExpr
+    (11) PowExpr -> . UnaryExpr POW PowExpr
+    (12) PowExpr -> . UnaryExpr
+    (15) UnaryExpr -> . PLUS UnaryExpr
+    (16) UnaryExpr -> . MINUS UnaryExpr
+    (17) UnaryExpr -> . Primary
+    (18) Primary -> . Number
+    (19) Primary -> . Variable
+    (20) Primary -> . Function
+    (21) Primary -> . Group
+    (22) Number -> . NUMBER
+    (23) Variable -> . VAR
+    (24) Function -> . FUNCTION LPAREN AddExpr RPAREN
+    (25) Function -> . FUNCTION Variable
+    (26) Function -> . FUNCTION Number
+    (27) Group -> . LPAREN AddExpr RPAREN
+
+    PLUS            shift and go to state 4
+    MINUS           shift and go to state 6
+    NUMBER          shift and go to state 14
+    VAR             shift and go to state 15
+    FUNCTION        shift and go to state 16
+    LPAREN          shift and go to state 17
+
+    Primary                        shift and go to state 9
+    PowExpr                        shift and go to state 41
+    UnaryExpr                      shift and go to state 8
+    Number                         shift and go to state 10
+    Variable                       shift and go to state 11
+    Function                       shift and go to state 12
+    Group                          shift and go to state 13
+
+state 38
+
+    (11) PowExpr -> UnaryExpr POW PowExpr .
+
+    MULT            reduce using rule 11 (PowExpr -> UnaryExpr POW PowExpr .)
+    DIV             reduce using rule 11 (PowExpr -> UnaryExpr POW PowExpr .)
+    NUMBER          reduce using rule 11 (PowExpr -> UnaryExpr POW PowExpr .)
+    VAR             reduce using rule 11 (PowExpr -> UnaryExpr POW PowExpr .)
+    FUNCTION        reduce using rule 11 (PowExpr -> UnaryExpr POW PowExpr .)
+    LPAREN          reduce using rule 11 (PowExpr -> UnaryExpr POW PowExpr .)
+    COMPARE         reduce using rule 11 (PowExpr -> UnaryExpr POW PowExpr .)
+    PLUS            reduce using rule 11 (PowExpr -> UnaryExpr POW PowExpr .)
+    MINUS           reduce using rule 11 (PowExpr -> UnaryExpr POW PowExpr .)
+    $end            reduce using rule 11 (PowExpr -> UnaryExpr POW PowExpr .)
+    RPAREN          reduce using rule 11 (PowExpr -> UnaryExpr POW PowExpr .)
+
+
+state 39
+
+    (24) Function -> FUNCTION LPAREN AddExpr . RPAREN
+    (4) AddExpr -> AddExpr . PLUS MulExpr
+    (5) AddExpr -> AddExpr . MINUS MulExpr
+
+    RPAREN          shift and go to state 42
+    PLUS            shift and go to state 19
+    MINUS           shift and go to state 20
+
+
+state 40
+
+    (27) Group -> LPAREN AddExpr RPAREN .
+
+    POW             reduce using rule 27 (Group -> LPAREN AddExpr RPAREN .)
+    MULT            reduce using rule 27 (Group -> LPAREN AddExpr RPAREN .)
+    DIV             reduce using rule 27 (Group -> LPAREN AddExpr RPAREN .)
+    NUMBER          reduce using rule 27 (Group -> LPAREN AddExpr RPAREN .)
+    VAR             reduce using rule 27 (Group -> LPAREN AddExpr RPAREN .)
+    FUNCTION        reduce using rule 27 (Group -> LPAREN AddExpr RPAREN .)
+    LPAREN          reduce using rule 27 (Group -> LPAREN AddExpr RPAREN .)
+    COMPARE         reduce using rule 27 (Group -> LPAREN AddExpr RPAREN .)
+    PLUS            reduce using rule 27 (Group -> LPAREN AddExpr RPAREN .)
+    MINUS           reduce using rule 27 (Group -> LPAREN AddExpr RPAREN .)
+    $end            reduce using rule 27 (Group -> LPAREN AddExpr RPAREN .)
+    RPAREN          reduce using rule 27 (Group -> LPAREN AddExpr RPAREN .)
+
+
+state 41
+
+    (13) PowExpr2 -> Primary POW PowExpr .
+
+    MULT            reduce using rule 13 (PowExpr2 -> Primary POW PowExpr .)
+    DIV             reduce using rule 13 (PowExpr2 -> Primary POW PowExpr .)
+    NUMBER          reduce using rule 13 (PowExpr2 -> Primary POW PowExpr .)
+    VAR             reduce using rule 13 (PowExpr2 -> Primary POW PowExpr .)
+    FUNCTION        reduce using rule 13 (PowExpr2 -> Primary POW PowExpr .)
+    LPAREN          reduce using rule 13 (PowExpr2 -> Primary POW PowExpr .)
+    COMPARE         reduce using rule 13 (PowExpr2 -> Primary POW PowExpr .)
+    PLUS            reduce using rule 13 (PowExpr2 -> Primary POW PowExpr .)
+    MINUS           reduce using rule 13 (PowExpr2 -> Primary POW PowExpr .)
+    $end            reduce using rule 13 (PowExpr2 -> Primary POW PowExpr .)
+    RPAREN          reduce using rule 13 (PowExpr2 -> Primary POW PowExpr .)
+
+
+state 42
+
+    (24) Function -> FUNCTION LPAREN AddExpr RPAREN .
+
+    POW             reduce using rule 24 (Function -> FUNCTION LPAREN AddExpr RPAREN .)
+    MULT            reduce using rule 24 (Function -> FUNCTION LPAREN AddExpr RPAREN .)
+    DIV             reduce using rule 24 (Function -> FUNCTION LPAREN AddExpr RPAREN .)
+    NUMBER          reduce using rule 24 (Function -> FUNCTION LPAREN AddExpr RPAREN .)
+    VAR             reduce using rule 24 (Function -> FUNCTION LPAREN AddExpr RPAREN .)
+    FUNCTION        reduce using rule 24 (Function -> FUNCTION LPAREN AddExpr RPAREN .)
+    LPAREN          reduce using rule 24 (Function -> FUNCTION LPAREN AddExpr RPAREN .)
+    COMPARE         reduce using rule 24 (Function -> FUNCTION LPAREN AddExpr RPAREN .)
+    PLUS            reduce using rule 24 (Function -> FUNCTION LPAREN AddExpr RPAREN .)
+    MINUS           reduce using rule 24 (Function -> FUNCTION LPAREN AddExpr RPAREN .)
+    $end            reduce using rule 24 (Function -> FUNCTION LPAREN AddExpr RPAREN .)
+    RPAREN          reduce using rule 24 (Function -> FUNCTION LPAREN AddExpr RPAREN .)
 

@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftCOMPAREleftPLUSMINUSleftMULTDIVrightPOWnonassocUMINUSCOMPARE DIV FUNCTION LPAREN MINUS MULT NUMBER PLUS POW RPAREN VARexpression : expression COMPARE expression\n                  | expression PLUS expression\n                  | expression MINUS expression \n                  | expression MULT expression  \n                  | expression DIV expression   \n                  | expression POW expressionexpression : LPAREN expression RPARENexpression : VARexpression : NUMBERexpression : MINUS expression %prec UMINUSexpression : FUNCTION LPAREN expression RPAREN\n                  | FUNCTION VAR '
+_lr_signature = 'COMPARE DIV FUNCTION LPAREN MINUS MULT NUMBER PLUS POW RPAREN VARExpr        : CompareExprCompareExpr : AddExpr COMPARE AddExpr\n                   | AddExprAddExpr     : AddExpr PLUS MulExpr\n                   | AddExpr MINUS MulExpr\n                   | MulExprMulExpr     : MulExpr MULT PowExpr\n                   | MulExpr DIV PowExpr\n                   | MulExpr PowExpr2\n                   | PowExprPowExpr     : UnaryExpr POW PowExpr\n                   | UnaryExprPowExpr2    : Primary POW PowExpr\n                   | PrimaryUnaryExpr   : PLUS UnaryExpr\n                   | MINUS UnaryExpr\n                   | PrimaryPrimary     : Number\n                   | Variable\n                   | Function\n                   | GroupNumber      : NUMBERVariable    : VARFunction    : FUNCTION LPAREN AddExpr RPAREN\n                   | FUNCTION Variable\n                   | FUNCTION NumberGroup       : LPAREN AddExpr RPAREN '
     
-_lr_action_items = {'LPAREN':([0,2,3,6,7,8,9,10,11,12,15,],[3,3,3,15,3,3,3,3,3,3,3,]),'VAR':([0,2,3,6,7,8,9,10,11,12,15,],[4,4,4,16,4,4,4,4,4,4,4,]),'NUMBER':([0,2,3,7,8,9,10,11,12,15,],[5,5,5,5,5,5,5,5,5,5,]),'MINUS':([0,1,2,3,4,5,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,],[2,9,2,2,-8,-9,2,2,2,2,2,2,-10,9,2,-12,9,-2,-3,-4,-5,-6,-7,9,-11,]),'FUNCTION':([0,2,3,7,8,9,10,11,12,15,],[6,6,6,6,6,6,6,6,6,6,]),'$end':([1,4,5,13,16,17,18,19,20,21,22,23,25,],[0,-8,-9,-10,-12,-1,-2,-3,-4,-5,-6,-7,-11,]),'COMPARE':([1,4,5,13,14,16,17,18,19,20,21,22,23,24,25,],[7,-8,-9,-10,7,-12,-1,-2,-3,-4,-5,-6,-7,7,-11,]),'PLUS':([1,4,5,13,14,16,17,18,19,20,21,22,23,24,25,],[8,-8,-9,-10,8,-12,8,-2,-3,-4,-5,-6,-7,8,-11,]),'MULT':([1,4,5,13,14,16,17,18,19,20,21,22,23,24,25,],[10,-8,-9,-10,10,-12,10,10,10,-4,-5,-6,-7,10,-11,]),'DIV':([1,4,5,13,14,16,17,18,19,20,21,22,23,24,25,],[11,-8,-9,-10,11,-12,11,11,11,-4,-5,-6,-7,11,-11,]),'POW':([1,4,5,13,14,16,17,18,19,20,21,22,23,24,25,],[12,-8,-9,-10,12,-12,12,12,12,12,12,12,-7,12,-11,]),'RPAREN':([4,5,13,14,16,17,18,19,20,21,22,23,24,25,],[-8,-9,-10,23,-12,-1,-2,-3,-4,-5,-6,-7,25,-11,]),}
+_lr_action_items = {'PLUS':([0,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,],[4,19,4,-6,4,-10,-12,-17,-18,-19,-20,-21,-22,-23,4,4,4,4,-15,4,4,-9,-14,-16,4,4,-25,-26,19,19,-4,-5,-7,-8,4,-11,19,-27,-13,-24,]),'MINUS':([0,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,],[6,20,6,-6,6,-10,-12,-17,-18,-19,-20,-21,-22,-23,6,6,6,6,-15,6,6,-9,-14,-16,6,6,-25,-26,20,20,-4,-5,-7,-8,6,-11,20,-27,-13,-24,]),'NUMBER':([0,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36,37,38,40,41,42,],[14,14,14,14,-10,-12,-17,-18,-19,-20,-21,-22,-23,14,14,14,14,14,-15,14,14,-9,-14,-16,14,14,-25,-26,14,14,-7,-8,14,-11,-27,-13,-24,]),'VAR':([0,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36,37,38,40,41,42,],[15,15,15,15,-10,-12,-17,-18,-19,-20,-21,-22,-23,15,15,15,15,15,-15,15,15,-9,-14,-16,15,15,-25,-26,15,15,-7,-8,15,-11,-27,-13,-24,]),'FUNCTION':([0,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36,37,38,40,41,42,],[16,16,16,16,-10,-12,-17,-18,-19,-20,-21,-22,-23,16,16,16,16,-15,16,16,-9,-14,-16,16,16,-25,-26,16,16,-7,-8,16,-11,-27,-13,-24,]),'LPAREN':([0,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36,37,38,40,41,42,],[17,17,17,17,-10,-12,-17,-18,-19,-20,-21,-22,-23,28,17,17,17,17,-15,17,17,-9,-14,-16,17,17,-25,-26,17,17,-7,-8,17,-11,-27,-13,-24,]),'$end':([1,2,3,5,7,8,9,10,11,12,13,14,15,21,24,25,26,29,30,32,33,34,35,36,38,40,41,42,],[0,-1,-3,-6,-10,-12,-17,-18,-19,-20,-21,-22,-23,-15,-9,-14,-16,-25,-26,-2,-4,-5,-7,-8,-11,-27,-13,-24,]),'COMPARE':([3,5,7,8,9,10,11,12,13,14,15,21,24,25,26,29,30,33,34,35,36,38,40,41,42,],[18,-6,-10,-12,-17,-18,-19,-20,-21,-22,-23,-15,-9,-14,-16,-25,-26,-4,-5,-7,-8,-11,-27,-13,-24,]),'RPAREN':([5,7,8,9,10,11,12,13,14,15,21,24,25,26,29,30,31,33,34,35,36,38,39,40,41,42,],[-6,-10,-12,-17,-18,-19,-20,-21,-22,-23,-15,-9,-14,-16,-25,-26,40,-4,-5,-7,-8,-11,42,-27,-13,-24,]),'MULT':([5,7,8,9,10,11,12,13,14,15,21,24,25,26,29,30,33,34,35,36,38,40,41,42,],[22,-10,-12,-17,-18,-19,-20,-21,-22,-23,-15,-9,-14,-16,-25,-26,22,22,-7,-8,-11,-27,-13,-24,]),'DIV':([5,7,8,9,10,11,12,13,14,15,21,24,25,26,29,30,33,34,35,36,38,40,41,42,],[23,-10,-12,-17,-18,-19,-20,-21,-22,-23,-15,-9,-14,-16,-25,-26,23,23,-7,-8,-11,-27,-13,-24,]),'POW':([8,9,10,11,12,13,14,15,21,25,26,29,30,40,42,],[27,-17,-18,-19,-20,-21,-22,-23,-15,37,-16,-25,-26,-27,-24,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expression':([0,2,3,7,8,9,10,11,12,15,],[1,13,14,17,18,19,20,21,22,24,]),}
+_lr_goto_items = {'Expr':([0,],[1,]),'CompareExpr':([0,],[2,]),'AddExpr':([0,17,18,28,],[3,31,32,39,]),'MulExpr':([0,17,18,19,20,28,],[5,5,5,33,34,5,]),'PowExpr':([0,17,18,19,20,22,23,27,28,37,],[7,7,7,7,7,35,36,38,7,41,]),'UnaryExpr':([0,4,6,17,18,19,20,22,23,27,28,37,],[8,21,26,8,8,8,8,8,8,8,8,8,]),'Primary':([0,4,5,6,17,18,19,20,22,23,27,28,33,34,37,],[9,9,25,9,9,9,9,9,9,9,9,9,25,25,9,]),'Number':([0,4,5,6,16,17,18,19,20,22,23,27,28,33,34,37,],[10,10,10,10,30,10,10,10,10,10,10,10,10,10,10,10,]),'Variable':([0,4,5,6,16,17,18,19,20,22,23,27,28,33,34,37,],[11,11,11,11,29,11,11,11,11,11,11,11,11,11,11,11,]),'Function':([0,4,5,6,17,18,19,20,22,23,27,28,33,34,37,],[12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,]),'Group':([0,4,5,6,17,18,19,20,22,23,27,28,33,34,37,],[13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,]),'PowExpr2':([5,33,34,],[24,24,24,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,17 +26,32 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> expression","S'",1,None,None,None),
-  ('expression -> expression COMPARE expression','expression',3,'p_calc','parser.py',30),
-  ('expression -> expression PLUS expression','expression',3,'p_calc','parser.py',31),
-  ('expression -> expression MINUS expression','expression',3,'p_calc','parser.py',32),
-  ('expression -> expression MULT expression','expression',3,'p_calc','parser.py',33),
-  ('expression -> expression DIV expression','expression',3,'p_calc','parser.py',34),
-  ('expression -> expression POW expression','expression',3,'p_calc','parser.py',35),
-  ('expression -> LPAREN expression RPAREN','expression',3,'p_expression_group','parser.py',42),
-  ('expression -> VAR','expression',1,'p_expression_var','parser.py',47),
-  ('expression -> NUMBER','expression',1,'p_expression_num','parser.py',52),
-  ('expression -> MINUS expression','expression',2,'p_expression_uminus','parser.py',57),
-  ('expression -> FUNCTION LPAREN expression RPAREN','expression',4,'p_expression_function','parser.py',63),
-  ('expression -> FUNCTION VAR','expression',2,'p_expression_function','parser.py',64),
+  ("S' -> Expr","S'",1,None,None,None),
+  ('Expr -> CompareExpr','Expr',1,'p_expr','parser.py',7),
+  ('CompareExpr -> AddExpr COMPARE AddExpr','CompareExpr',3,'p_compare_expr','parser.py',16),
+  ('CompareExpr -> AddExpr','CompareExpr',1,'p_compare_expr','parser.py',17),
+  ('AddExpr -> AddExpr PLUS MulExpr','AddExpr',3,'p_add_expr','parser.py',30),
+  ('AddExpr -> AddExpr MINUS MulExpr','AddExpr',3,'p_add_expr','parser.py',31),
+  ('AddExpr -> MulExpr','AddExpr',1,'p_add_expr','parser.py',32),
+  ('MulExpr -> MulExpr MULT PowExpr','MulExpr',3,'p_mult_expr','parser.py',48),
+  ('MulExpr -> MulExpr DIV PowExpr','MulExpr',3,'p_mult_expr','parser.py',49),
+  ('MulExpr -> MulExpr PowExpr2','MulExpr',2,'p_mult_expr','parser.py',50),
+  ('MulExpr -> PowExpr','MulExpr',1,'p_mult_expr','parser.py',51),
+  ('PowExpr -> UnaryExpr POW PowExpr','PowExpr',3,'p_pow_expr','parser.py',74),
+  ('PowExpr -> UnaryExpr','PowExpr',1,'p_pow_expr','parser.py',75),
+  ('PowExpr2 -> Primary POW PowExpr','PowExpr2',3,'p_pow_expr2','parser.py',91),
+  ('PowExpr2 -> Primary','PowExpr2',1,'p_pow_expr2','parser.py',92),
+  ('UnaryExpr -> PLUS UnaryExpr','UnaryExpr',2,'p_unary_expr','parser.py',108),
+  ('UnaryExpr -> MINUS UnaryExpr','UnaryExpr',2,'p_unary_expr','parser.py',109),
+  ('UnaryExpr -> Primary','UnaryExpr',1,'p_unary_expr','parser.py',110),
+  ('Primary -> Number','Primary',1,'p_primary','parser.py',126),
+  ('Primary -> Variable','Primary',1,'p_primary','parser.py',127),
+  ('Primary -> Function','Primary',1,'p_primary','parser.py',128),
+  ('Primary -> Group','Primary',1,'p_primary','parser.py',129),
+  ('Number -> NUMBER','Number',1,'p_number','parser.py',137),
+  ('Variable -> VAR','Variable',1,'p_variable','parser.py',146),
+  ('Function -> FUNCTION LPAREN AddExpr RPAREN','Function',4,'p_function','parser.py',155),
+  ('Function -> FUNCTION Variable','Function',2,'p_function','parser.py',156),
+  ('Function -> FUNCTION Number','Function',2,'p_function','parser.py',157),
+  ('Group -> LPAREN AddExpr RPAREN','Group',3,'p_group','parser.py',176),
 ]

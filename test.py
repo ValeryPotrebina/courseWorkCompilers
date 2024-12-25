@@ -8,28 +8,10 @@ from utils import print_tree, prettify
 
     
 if __name__=="__main__":
-    expression1 = "sin(x)^2 + 2*x*x + 5 + 5*x*x + 5 + sin(x)^2 "
-    expression2 = "sin(1)^2 + cos(1)^2"
-    expression3 = "2^(2*y)"
-    expression4 = "(x + y)/z + 6 + x/z = 3"
-
-    res1 = parse(expression1)
-    f_letter, result1 = simplify(res1)
-    
-    res2 = parse(expression2)
-    f_letter, result2 = simplify(res2)
-
-    res3 = parse(expression3)
-    f_letter, result3 = simplify(res3)
-
-    res4 = parse(expression4)
-    f_letter, result4 = simplify(res4)
-    print("\n")
-    print(f"Test1: {prettify(res1)}\nResult1: ", prettify(result1))
-    print(f"Test2: {prettify(res2)}\nResult2: ", prettify( result2))
-    print(f"Test3: {prettify(res3)}\nResult3: ", prettify(result3))
-    print(f"Test4: {prettify(res4)}\nResult4: ", prettify(result4))
-    print("\n")
+    expression = "sin(x)^2 + 2*x*x + 5 + 5*x*x + 5 + sin(x)^2"
+    result = parse(expression)
+    f_letter, result = simplify(result)
+    print(f_letter, prettify(result))
 
     
 

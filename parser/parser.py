@@ -2,65 +2,190 @@ from ply import yacc
 from .lexer import tokens
 from model import NumberNode, VariableNode, BinaryOpNode, FunctionNode, UnaryOpNode
 
-names = {}
 
-precedence = (
-    ('left', 'COMPARE'),
-    ('left', 'PLUS', 'MINUS'),
-    ('left', 'MULT', 'DIV'),
-    ('right', 'POW'),
-    ('nonassoc', 'UMINUS'),
-)
+def p_expr(p):
+    '''Expr        : CompareExpr'''
 
-
-# def p_statement_expt(p):
-#     'statement : expression'
-#     print(p[1])
+    # print('Expr')
+    if (len(p) == 2):
+        p[0] = p[1]
+        return
 
 
-def p_calc(p):
-    '''expression : expression COMPARE expression
-                  | expression PLUS expression
-                  | expression MINUS expression 
-                  | expression MULT expression  
-                  | expression DIV expression   
-                  | expression POW expression'''
-    p[0] = BinaryOpNode(p[1], p[2], p[3])
+def p_compare_expr(p):
+    '''CompareExpr : AddExpr COMPARE AddExpr
+                   | AddExpr'''
+
+    # print('CompareExpr')
+    if (len(p) == 4):
+        p[0] = BinaryOpNode(p[1], p[2], p[3])
+        return
+
+    if (len(p) == 2):
+        p[0] = p[1]
+        return
 
 
-def p_expression_group(p):
-    'expression : LPAREN expression RPAREN'
-    p[0] = p[2]
+def p_add_expr(p):
+    '''AddExpr     : AddExpr PLUS MulExpr
+                   | AddExpr MINUS MulExpr
+                   | MulExpr'''
+
+    # print('AddExpr')
+    if (len(p) == 4):
+        if(p[1] == None or p[3] == None):
+            p[0] = p[1] if p[3] == None else p[3]
+            return
+        p[0] = BinaryOpNode(p[1], p[2], p[3])
+        return
+
+    if (len(p) == 2):
+        p[0] = p[1]
+        return
 
 
-def p_expression_var(p):
-    'expression : VAR'
-    p[0] = VariableNode(p[1])
+def p_mult_expr(p):
+    '''MulExpr     : MulExpr MULT PowExpr
+                   | MulExpr DIV PowExpr
+                   | MulExpr PowExpr2
+                   | PowExpr'''
 
-def p_expression_num(p):
-    'expression : NUMBER'
-    p[0] = NumberNode(p[1])
-def p_expression_uminus(p):
-    # Указываем приоритет унарного минуса
-    'expression : MINUS expression %prec UMINUS'
-    p[0] = UnaryOpNode('-', p[2])
+    # # print('MulExpr')
+    if (len(p) == 4):
+        if(p[1] == None or p[3] == None):
+            p[0] = p[1] if p[3] == None else p[3]
+            return
+        p[0] = BinaryOpNode(p[1], p[2], p[3])
+        return
+
+    if (len(p) == 3):
+        if(p[1] == None or p[2] == None):
+            p[0] = p[1] if p[2] == None else p[2]
+            return
+        p[0] = BinaryOpNode(p[1], '*', p[2])
+        return
+
+    if (len(p) == 2):
+        p[0] = p[1]
+        return
 
 
-def p_expression_function(p):
-    '''expression : FUNCTION LPAREN expression RPAREN
-                  | FUNCTION VAR '''
+def p_pow_expr(p):  
+    '''PowExpr     : UnaryExpr POW PowExpr
+                   | UnaryExpr'''
+
+    # print('PowExpr')
+    if (len(p) == 4):
+        if(p[1] == None or p[3] == None):
+            p[0] = p[1] if p[3] == None else p[3]
+            return
+        p[0] = BinaryOpNode(p[1], p[2], p[3])
+        return
+
+    if (len(p) == 2):
+        p[0] = p[1]
+        return
+
+
+def p_pow_expr2(p):
+    '''PowExpr2    : Primary POW PowExpr
+                   | Primary'''
+
+    # print('PowExpr2')
+    if (len(p) == 4):
+        if(p[1] == None or p[3] == None):
+            p[0] = p[1] if p[3] == None else p[3]
+            return
+        p[0] = BinaryOpNode(p[1], p[2], p[3])
+        return
+
+    if (len(p) == 2):
+        p[0] = p[1]
+        return
+
+
+def p_unary_expr(p):
+    '''UnaryExpr   : PLUS UnaryExpr
+                   | MINUS UnaryExpr
+                   | Primary'''
+
+    # print('UnaryExpr')
+    if (len(p) == 3):
+        if(p[2] == None):
+            p[0] = p[2]
+            return
+        p[0] = UnaryOpNode(p[1], p[2])
+        return
+
+    if (len(p) == 2):
+        p[0] = p[1]
+        return
+
+
+def p_primary(p):
+    '''Primary     : Number
+                   | Variable
+                   | Function
+                   | Group'''
+
+    # print('Primary')
+    if (len(p) == 2):
+        p[0] = p[1]
+        return
+    
+def p_number(p):
+    '''Number      : NUMBER'''
+
+    # print('Number')
+    if (len(p) == 2):
+        p[0] = NumberNode(p[1])
+        return
+
+
+def p_variable(p):
+    '''Variable    : VAR'''
+
+    # print('Variable')
+    if (len(p) == 2):
+        p[0] = VariableNode(p[1])
+        return
+
+
+def p_function(p):
+    '''Function    : FUNCTION LPAREN AddExpr RPAREN
+                   | FUNCTION Variable
+                   | FUNCTION Number'''
+
+    # print('Function')
     if (len(p) == 5):
+        if(p[3] == None):
+            p[0] = p[3]
+            return
         p[0] = FunctionNode(p[1], p[3])
-    else:
-        p[0] = FunctionNode(p[1], p[2])
+        return
 
+    if (len(p) == 3):
+        if(p[2] == None):
+            p[0] = p[2]
+            return
+        p[0] = FunctionNode(p[1], p[2])
+        return
+
+
+def p_group(p):
+    '''Group       : LPAREN AddExpr RPAREN '''
+
+    # print('Group')
+    if (len(p) == 4):
+        p[0] = p[2]
+        return
 
 
 def p_error(p):
-    print("Syntax error at '%s'" % p.value)
+    if not p:
+        # print("Unexpected end of file")
+        return
+    # print("Syntax error at '%s'" % p.value)
 
 
 parser = yacc.yacc()
-
-
-
