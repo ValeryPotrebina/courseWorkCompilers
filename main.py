@@ -16,7 +16,7 @@ def solve():
     try:
         result = parse(expression)
         f_letter, result = simplify(result)
-        print(f_letter, prettify(result))
+        # print(f_letter, prettify(result))
         # print_tree(result)
         res = toLatex(result)
         vars, f = convert(result)
@@ -28,7 +28,6 @@ def solve():
             'result': str(res),
             'roots': roots,
             'points': points
-
                         })
     except Exception as e:
         traceback.print_exc()

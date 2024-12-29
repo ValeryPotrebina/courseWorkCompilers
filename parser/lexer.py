@@ -74,3 +74,6 @@ lexer = lex()
 #     if not tok:
 #         break
 #     print(tok)
+
+# def __init__(self):
+#     self.lexer = lex()

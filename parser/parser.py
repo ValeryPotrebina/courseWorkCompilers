@@ -6,7 +6,6 @@ from model import NumberNode, VariableNode, BinaryOpNode, FunctionNode, UnaryOpN
 def p_expr(p):
     '''Expr        : CompareExpr'''
 
-    # print('Expr')
     if (len(p) == 2):
         p[0] = p[1]
         return
@@ -16,7 +15,6 @@ def p_compare_expr(p):
     '''CompareExpr : AddExpr COMPARE AddExpr
                    | AddExpr'''
 
-    # print('CompareExpr')
     if (len(p) == 4):
         p[0] = BinaryOpNode(p[1], p[2], p[3])
         return
@@ -31,7 +29,6 @@ def p_add_expr(p):
                    | AddExpr MINUS MulExpr
                    | MulExpr'''
 
-    # print('AddExpr')
     if (len(p) == 4):
         if(p[1] == None or p[3] == None):
             p[0] = p[1] if p[3] == None else p[3]
@@ -50,7 +47,6 @@ def p_mult_expr(p):
                    | MulExpr PowExpr2
                    | PowExpr'''
 
-    # # print('MulExpr')
     if (len(p) == 4):
         if(p[1] == None or p[3] == None):
             p[0] = p[1] if p[3] == None else p[3]
@@ -74,7 +70,6 @@ def p_pow_expr(p):
     '''PowExpr     : UnaryExpr POW PowExpr
                    | UnaryExpr'''
 
-    # print('PowExpr')
     if (len(p) == 4):
         if(p[1] == None or p[3] == None):
             p[0] = p[1] if p[3] == None else p[3]
@@ -91,7 +86,6 @@ def p_pow_expr2(p):
     '''PowExpr2    : Primary POW PowExpr
                    | Primary'''
 
-    # print('PowExpr2')
     if (len(p) == 4):
         if(p[1] == None or p[3] == None):
             p[0] = p[1] if p[3] == None else p[3]
@@ -109,7 +103,6 @@ def p_unary_expr(p):
                    | MINUS UnaryExpr
                    | Primary'''
 
-    # print('UnaryExpr')
     if (len(p) == 3):
         if(p[2] == None):
             p[0] = p[2]
@@ -128,15 +121,12 @@ def p_primary(p):
                    | Function
                    | Group'''
 
-    # print('Primary')
     if (len(p) == 2):
         p[0] = p[1]
         return
     
 def p_number(p):
     '''Number      : NUMBER'''
-
-    # print('Number')
     if (len(p) == 2):
         p[0] = NumberNode(p[1])
         return
@@ -145,7 +135,6 @@ def p_number(p):
 def p_variable(p):
     '''Variable    : VAR'''
 
-    # print('Variable')
     if (len(p) == 2):
         p[0] = VariableNode(p[1])
         return
@@ -156,7 +145,6 @@ def p_function(p):
                    | FUNCTION Variable
                    | FUNCTION Number'''
 
-    # print('Function')
     if (len(p) == 5):
         if(p[3] == None):
             p[0] = p[3]
@@ -174,8 +162,6 @@ def p_function(p):
 
 def p_group(p):
     '''Group       : LPAREN AddExpr RPAREN '''
-
-    # print('Group')
     if (len(p) == 4):
         p[0] = p[2]
         return

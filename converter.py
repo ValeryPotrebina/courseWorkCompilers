@@ -13,6 +13,7 @@ def colectVariables(node):
     return []
 
 
+
 def convert(node):
     vars = sorted(colectVariables(node))
     return vars, convertNode(node, vars)
